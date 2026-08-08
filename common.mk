@@ -30,6 +30,20 @@ PRODUCT_USE_DYNAMIC_PARTITIONS := true
 PRODUCT_BOARD_PLATFORM := atoll
 PRODUCT_USES_QCOM_HARDWARE := true
 
+# Hotword Enrollment
+$(call inherit-product-if-exists, vendor/hotword/google.mk)
+
+# Audio mods (enable any subset via flags, e.g. WITH_AUDIO_DOLBY and WITH_AUDIO_VIPER)
+ifeq ($(WITH_AUDIO_DIRAC),true)
+$(call inherit-product-if-exists, packages/apps/RealmeDirac/dirac.mk)
+endif
+ifeq ($(WITH_AUDIO_VIPER),true)
+PRODUCT_PACKAGES += ViPER4AndroidFX
+endif
+ifeq ($(WITH_AUDIO_DOLBY),true)
+$(call inherit-product-if-exists, hardware/dolby/dolby.mk)
+endif
+
 # AID/fs configs
 PRODUCT_PACKAGES += \
     fs_config_files
@@ -72,6 +86,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,$(LOCAL_PATH)/audio/odm/,$(TARGET_COPY_OUT_ODM)/etc) \
     $(call find-copy-subdir-files,*,$(LOCAL_PATH)/audio/vendor/,$(TARGET_COPY_OUT_VENDOR)/etc)
+
+# Hotword Enrollment
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/hotword/hotword-hiddenapi-package-whitelist.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/sysconfig/hotword-hiddenapi-package-whitelist.xml \
+    $(LOCAL_PATH)/configs/hotword/privapp-permissions-hotword.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-hotword.xml
 
 # Bluetooth
 PRODUCT_PACKAGES += \
