@@ -37,6 +37,10 @@ PRODUCT_PACKAGES += \
 # API
 PRODUCT_SHIPPING_API_LEVEL := 29
 
+# 4.14 kernel predates CC_IS_CLANG/LD_IS_LLD/AS_IS_LLVM Kconfig symbols, so it
+# cannot satisfy FCM kernel-requirement config checks at higher matrix levels.
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
+
 # Audio
 PRODUCT_PACKAGES += \
     libvolumelistener
@@ -338,8 +342,7 @@ PRODUCT_COPY_FILES += \
 
 #NotchBar Killer
 PRODUCT_PACKAGES += \
-    NotchBarKiller \
-    NoCutoutOverlay
+    NotchBarKiller
 
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += \
