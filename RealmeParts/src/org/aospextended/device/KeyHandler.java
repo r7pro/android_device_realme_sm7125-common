@@ -61,7 +61,7 @@ public class KeyHandler implements DeviceKeyHandler {
     private static final int GESTURE_REQUEST = 1;
     private static final int GESTURE_WAKELOCK_DURATION = 2000;
 
-    private static final int GESTURE_DOUBLE_TAP_SCANCODE = 143;
+    private static final int GESTURE_DOUBLE_TAP_SCANCODE = 248;
     private static final int GESTURE_W_SCANCODE = 246;
     private static final int GESTURE_M_SCANCODE = 247;
     private static final int GESTURE_CIRCLE_SCANCODE = 249;
@@ -186,16 +186,33 @@ public class KeyHandler implements DeviceKeyHandler {
     }
 
     public KeyEvent handleKeyEvent(KeyEvent event) {
-        if (event.getAction() != KeyEvent.ACTION_UP) {
+        int scanCode = event.getScanCode();
+        if (!isGestureScanCode(scanCode)) {
             return event;
         }
-        int scanCode = event.getScanCode();
-        if (!mEventHandler.hasMessages(GESTURE_REQUEST)) {
+        if (event.getAction() == KeyEvent.ACTION_UP
+                && !mEventHandler.hasMessages(GESTURE_REQUEST)) {
             Message msg = getMessageForKeyEvent(event);
             mEventHandler.sendMessage(msg);
         }
 
-        return event;
+        return null;
+    }
+
+    private boolean isGestureScanCode(int scanCode) {
+        return scanCode == GESTURE_DOUBLE_TAP_SCANCODE
+                || scanCode == GESTURE_W_SCANCODE
+                || scanCode == GESTURE_M_SCANCODE
+                || scanCode == GESTURE_CIRCLE_SCANCODE
+                || scanCode == GESTURE_TWO_SWIPE_SCANCODE
+                || scanCode == GESTURE_UP_ARROW_SCANCODE
+                || scanCode == GESTURE_DOWN_ARROW_SCANCODE
+                || scanCode == GESTURE_LEFT_ARROW_SCANCODE
+                || scanCode == GESTURE_RIGHT_ARROW_SCANCODE
+                || scanCode == GESTURE_SWIPE_UP_SCANCODE
+                || scanCode == GESTURE_SWIPE_DOWN_SCANCODE
+                || scanCode == GESTURE_SWIPE_LEFT_SCANCODE
+                || scanCode == GESTURE_SWIPE_RIGHT_SCANCODE;
     }
 
     private Message getMessageForKeyEvent(KeyEvent keyEvent) {
