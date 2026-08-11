@@ -34,9 +34,6 @@ PRODUCT_USES_QCOM_HARDWARE := true
 $(call inherit-product-if-exists, vendor/hotword/google.mk)
 
 # Audio mods (enable any subset via flags, e.g. WITH_AUDIO_DOLBY and WITH_AUDIO_VIPER)
-ifeq ($(WITH_AUDIO_DIRAC),true)
-$(call inherit-product-if-exists, packages/apps/RealmeDirac/dirac.mk)
-endif
 ifeq ($(WITH_AUDIO_VIPER),true)
 PRODUCT_PACKAGES += ViPER4AndroidFX
 endif

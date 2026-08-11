@@ -2,13 +2,6 @@
 vendor.audio_hal.period_size=192
 ro.vendor.audio.sdk.fluencetype=none
 hpx_send_params=1
-persist.audio.dirac.speaker=true
-persist.dirac.acs.controller=qem
-persist.dirac.acs.ignore_error=1
-persist.dirac.acs.storeSettings=1
-ro.audio.soundfx.dirac=true
-ro.vendor.audio.soundfx.dirac=true
-ro.vendor.audio.soundfx.type=dirac
 persist.vendor.audio.fluence.voicecall=true
 persist.vendor.audio.fluence.voicerec=false
 persist.vendor.audio.fluence.speaker=true
