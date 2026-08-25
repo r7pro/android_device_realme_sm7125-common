@@ -136,10 +136,6 @@
     -->
     <bool name="config_powerDecoupleInteractiveModeFromDisplay">false</bool>
 
-    <!-- Delay that allows some content to arrive at the display before switching
-         from DOZE to ON, in millis. -->
-    <integer name="config_wakeUpDelayDoze">32</integer>
-
     <!-- ComponentName of a dream to show whenever the system would otherwise have
          gone to sleep.  When the PowerManager is asked to go to sleep, it will instead
          try to start this dream if possible.  The dream should typically call startDozing()
@@ -627,24 +623,6 @@
     <!-- Bytes that the PinnerService will pin for Home app -->
     <integer name="config_pinnerHomePinBytes">6291456</integer>
 
-    <!-- List of files pinned by the Pinner Service with the JIT Zygote boot image b/119800099 -->
-    <string-array translatable="false" name="config_jitzygoteBootImagePinnerServiceFiles">
-        <item>"/system/bin/surfaceflinger"</item>
-        <item>"/system/framework/framework.jar"</item>
-        <item>"/system/framework/services.jar"</item>
-        <item>"/apex/com.android.art/javalib/core-oj.jar"</item>
-        <item>"/apex/com.android.art/javalib/core-libart.jar"</item>
-        <item>"/apex/com.android.media/javalib/updatable-media.jar"</item>
-        <item>"/system_ext/priv-app/SystemUI/SystemUI.apk"</item>
-        <item>"/system/lib64/libRScpp.so"</item>
-        <item>"/system/lib64/libRS.so"</item>
-        <item>"/system/lib64/libRS_internal.so"</item>
-        <item>"/system/lib64/libbcinfo.so"</item>
-        <item>"/system/lib64/libRSDriver.so"</item>
-        <item>"/system/lib64/libRSCpuRef.so"</item>
-        <item>"/system/lib64/libblas.so"</item>
-    </string-array>
-
     <!-- The default journal mode to use use when Write-Ahead Logging is not active.
          Choices are: OFF, DELETE, TRUNCATE, PERSIST and MEMORY.
          PERSIST may improve performance by reducing how often journal blocks are
@@ -678,37 +656,11 @@
           available on some devices. -->
     <bool name="config_enableHapticTextHandle">true</bool>
 
-    <!-- Whether to post reset runnable for all clients. Needed for some older
-         vendor fingerprint HAL implementations. -->
-    <bool name="config_fingerprintPostResetRunnableForAllClients">true</bool>
-
-    <!-- Whether device has a notch -->
-    <bool name="config_haveNotch">true</bool>
-
-    <!-- Paths to the libraries that contain device specific key handlers -->
-    <string-array name="config_deviceKeyHandlerLibs" translatable="false">
-        <item>/system/priv-app/RealmeParts/RealmeParts.apk</item>
-    </string-array>
-
-    <!-- Names of the key handler classes -->
-    <string-array name="config_deviceKeyHandlerClasses" translatable="false">
-        <item>org.aospextended.device.KeyHandler</item>
-    </string-array>
-
     <!-- Path to fast charging status file to detect whether an oem fast charger is active -->
     <string name="config_oemFastChargerStatusPath" translatable="false">/sys/class/power_supply/battery/voocchg_ing</string>
 
     <!-- Whether device has VOOC charging support -->
     <bool name="config_hasVoocCharger">true</bool>
-
-    <!-- Whether device has screen with higher aspect ratio -->
-    <bool name="config_haveHigherAspectRatioScreen">true</bool>
-
-    <!-- Full screen aspect ratio -->
-    <item name="config_screenAspectRatio" format="float" type="dimen">2.222</item>
-
-    <!-- Is the battery LED intrusive? Used to decide if there should be a disable option -->
-    <bool name="config_intrusiveBatteryLed">false</bool>
      
     <!-- The default refresh rate for a given device. Change this value to set a higher default
          refresh rate. If the hardware composer on the device supports display modes with a higher
@@ -722,9 +674,6 @@
 
     <!-- Maximum strength, in percentage, supported by bright color reduction. -->
     <integer name="config_reduceBrightColorsStrengthMax">120</integer>
-    
-    <!-- Shows the required view for in-display fingerprint -->
-    <bool name="config_supportsInDisplayFingerprint">true</bool>
 
     <!-- Control the behavior when the user long presses the power button.
             0 - Nothing
@@ -762,14 +711,8 @@
     <!-- The max scale for the wallpaper when it's zoomed in -->
     <item name="config_wallpaperMaxScale" format="float" type="dimen">1</item>
 
-    <!-- Turbulence effect -->
-    <bool name="config_mediaControlsTurbulenceByDefault">false</bool>
-
     <!-- Whether we use large screen shade header which takes only one row compared to QS header -->
     <bool name="config_use_large_screen_shade_header">true</bool>
-    
-    <!-- Boost Framework -->
-    <bool name="config_supportsBoostFramework">true</bool>
 
     <!-- Whether WiFi display is supported by this device.
          There are many prerequisites for this feature to work correctly.
@@ -784,22 +727,5 @@
          * The device must be provisioned with HDCP keys (for protected content).
     -->
     <bool name="config_enableWifiDisplay">true</bool>
-
-    <!-- Whether to show a custom view for FOD -->
-    <bool name="config_needCustomFODView">true</bool>
-
-    <!-- Color of the FOD view -->
-    <color name="config_fodColor">#00ffffff</color>
-
- <!-- The properties of a UDFPS sensor in pixels, in the order listed below: -->
-    <integer-array name="config_udfps_sensor_props" translatable="false" >
-        <item>540</item>
-        <item>2197</item>
-        <item>97</item>
-    </integer-array>
-    
-    <!-- How long it takes for the HW to start illuminating after the illumination is requested. -->
-    <integer name="config_udfps_illumination_transition_ms">0</integer>
 </resources>
-
 
