@@ -1,7 +1,6 @@
 # Audio
 vendor.audio_hal.period_size=192
 ro.vendor.audio.sdk.fluencetype=none
-hpx_send_params=1
 persist.vendor.audio.fluence.voicecall=true
 persist.vendor.audio.fluence.voicerec=false
 persist.vendor.audio.fluence.speaker=true
@@ -111,7 +110,6 @@ ro.crypto.volume.options=::v2
 # Display
 debug.hwui.renderer=skiagl
 debug.renderengine.backend=skiaglthreaded
-renderthread.skia.reduceopstasksplitting=true
 ro.hardware.egl=adreno
 ro.hardware.vulkan=adreno
 ro.opengles.version=196610
@@ -131,7 +129,6 @@ vendor.gralloc.disable_ubwc=0
 vendor.display.disable_metadata_dynamic_fps=1
 vendor.display.enable_perf_hint_large_comp_cycle=1
 ro.surface_flinger.enable_frame_rate_override=false
-ro.hwui.render_ahead=10
 ro.surface_flinger.set_idle_timer_ms=80
 ro.surface_flinger.set_touch_timer_ms=200
 ro.surface_flinger.set_display_power_timer_ms=1000
@@ -141,9 +138,6 @@ ro.surface_flinger.support_kernel_idle_timer=true
 ro.surface_flinger.has_HDR_display=true
 ro.surface_flinger.has_wide_color_display=true
 ro.surface_flinger.use_color_management=true
-# Inherited low-RAM (Android Go) flag that disables HW-accelerated rendering -> forces
-# slow software/CPU paths for window animations and burns battery. Wrong for 8GB/Adreno 618.
-ro.config.avoid_gfx_accel=false
 debug.sf.predict_hwc_composition_strategy=0
 debug.sf.auto_latch_unsignaled=0
 debug.sf.enable_gl_backpressure=0
@@ -162,9 +156,6 @@ ro.qcom.adreno.qgl.ShaderStorageImageExtendedFormats=0
 # FM
 vendor.hw.fm.init=0
 
-# FUSE passthrough
-persist.sys.fuse.passthrough.enable=true
-
 #Graphics
 debug.hwui.use_hint_manager=true
 debug.hwui.target_cpu_time_percent=30
@@ -182,9 +173,6 @@ vendor.media.omx=0
 drm.service.enabled=true
 
 # NFC
-persist.sys.nfc.disPowerSave=1
-ro.camera.notify_nfc=1
-persist.sys.nfc.aid_overflow=true
 ro.hardware.nfc_nci=nqx.default
 
 # PASR
@@ -204,7 +192,6 @@ persist.radio.multisim.config=dsds
 persist.vendor.radio.rat_on=combine
 ro.telephony.default_network=22,20
 ro.vendor.use_data_netmgrd=true
-telephony.lteOnCdmaDevice=1
 
 # Sensors
 persist.vendor.sensors.odl.adsp=true
@@ -212,16 +199,9 @@ persist.vendor.sensors.enable.mag_filter=true
 persist.vendor.sensors.support_direct_channel=false
 persist.vendor.sensors.allow_non_default_discovery=true
 
-# Wi-Fi
-wifi.aware.interface=wifi-aware0
-
 # SOC
 ro.soc.manufacturer=QTI
 ro.soc.model=SM7125
-
-# ScrollOptimizer
-persist.sys.perf.scroll_opt=true
-persist.sys.perf.scroll_opt.heavy_app=1
 
 # Usb
 persist.vendor.usb.config.extra=none
@@ -233,9 +213,6 @@ vendor.usb.rmnet.inst.name=rmnet
 vendor.usb.rndis.func.name=gsi
 vendor.usb.use_ffs_mtp=0
 vendor.usb.use_gadget_hal=0
-
-# Seamless transfer
-sys.fflag.override.settings_seamless_transfer=true
 
 # default refresh rate threshold
 debug.sf.frame_rate_multiple_threshold=0
