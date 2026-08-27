@@ -38,6 +38,10 @@ ifeq ($(WITH_AUDIO_DOLBY),true)
 $(call inherit-product-if-exists, hardware/dolby/dolby.mk)
 endif
 
+# Remove unwanted packages
+PRODUCT_PACKAGES += \
+    RemovePackages
+
 # AID/fs configs
 PRODUCT_PACKAGES += \
     fs_config_files
