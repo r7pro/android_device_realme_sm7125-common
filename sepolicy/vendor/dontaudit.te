@@ -1,1 +1,8 @@
 dontaudit untrusted_app ashmem_device:chr_file open;
+dontaudit fsck mnt_vendor_file:dir search;
+dontaudit fsck block_device:blk_file { read write open };
+dontaudit rild cache_file:dir { getattr search };
+dontaudit { hal_sensors_default hal_audio_default } default_prop:file { read open getattr map };
+dontaudit hal_sensors_default system_prop:file { read open getattr map };
+dontaudit vendor_qtidataservices_app default_prop:file { read open getattr map };
+dontaudit vendor_rmt_storage default_prop:file { read open getattr map };
