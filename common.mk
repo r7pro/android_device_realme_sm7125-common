@@ -298,7 +298,7 @@ $(call inherit-product-if-exists, vendor/lawnchair/lawnchair.mk)
 PRODUCT_PACKAGES += \
     vendor.lineage.livedisplay-service.sdm
 
-$(call soong_config_set,livedisplay_sdm,enable_dm_bool,false)
+$(call soong_config_set_bool,livedisplay_sdm,enable_dm,false)
 
 # Media
 PRODUCT_PACKAGES += \
