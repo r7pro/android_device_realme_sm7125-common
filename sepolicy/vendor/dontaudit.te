@@ -6,3 +6,5 @@ dontaudit { hal_sensors_default hal_audio_default } default_prop:file { read ope
 dontaudit hal_sensors_default system_prop:file { read open getattr map };
 dontaudit vendor_qtidataservices_app default_prop:file { read open getattr map };
 dontaudit vendor_rmt_storage default_prop:file { read open getattr map };
+dontaudit hal_camera_default { default_prop system_prop }:file { read open getattr map };
+dontaudit init self:capability sys_ptrace;

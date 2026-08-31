@@ -169,16 +169,13 @@ function configure_memory_parameters() {
     
     # Set global VM parameters
     echo 0 > /sys/module/vmpressure/parameters/allocstall_threshold
-    # wsf was forced to 1 (laziest reclaim -> kswapd wakes late -> direct-reclaim
-    # stalls/jank). 30 is the community value for non-MGLRU LRU devices: kswapd
-    # reclaims a bit more proactively without the over-reclaim seen at 100.
-    # NOTE: this is the one knob to watch; revert to 1 if anything feels worse.
     echo 30 > /proc/sys/vm/watermark_scale_factor
+    echo 16384 > /proc/sys/vm/min_free_kbytes
+    echo 0 > /proc/sys/vm/extra_free_kbytes
+    echo 100 > /proc/sys/vm/vfs_cache_pressure
     
     # Configure read-ahead values
     configure_read_ahead_kb_values
-    
-    # Enable swap
     enable_swap
 }
 
@@ -189,12 +186,19 @@ echo 60 > /sys/devices/system/cpu/cpu0/core_ctl/busy_up_thres
 echo 40 > /sys/devices/system/cpu/cpu0/core_ctl/busy_down_thres
 echo 100 > /sys/devices/system/cpu/cpu0/core_ctl/offline_delay_ms
 echo 8 > /sys/devices/system/cpu/cpu0/core_ctl/task_thres
-echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
+
+# Core control parameters on gold (allow CPU 7 to sleep when not needed)
+echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
+echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/min_cpus
+echo 68 > /sys/devices/system/cpu/cpu6/core_ctl/busy_up_thres
+echo 30 > /sys/devices/system/cpu/cpu6/core_ctl/busy_down_thres
+echo 100 > /sys/devices/system/cpu/cpu6/core_ctl/offline_delay_ms
+echo 2 > /sys/devices/system/cpu/cpu6/core_ctl/task_thres
 
 # Setting b.L scheduler parameters
-# default sched up and down migrate values are 95 and 85
-echo 65 > /proc/sys/kernel/sched_downmigrate
-echo 71 > /proc/sys/kernel/sched_upmigrate
+# sched_upmigrate must be set before sched_downmigrate when raising threshold
+echo 85 > /proc/sys/kernel/sched_upmigrate
+echo 75 > /proc/sys/kernel/sched_downmigrate
 # default sched up and down migrate values are 100 and 95
 echo 85 > /proc/sys/kernel/sched_group_downmigrate
 echo 100 > /proc/sys/kernel/sched_group_upmigrate
@@ -205,14 +209,14 @@ echo 740000 > /proc/sys/kernel/sched_little_cluster_coloc_fmin_khz
 
 # Configure governor settings for little cluster
 echo "schedutil" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-echo 500 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/up_rate_limit_us
+echo 1000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/up_rate_limit_us
 echo 20000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/down_rate_limit_us
 echo 1248000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 echo 576000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
 # Configure governor settings for big cluster
 echo "schedutil" > /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor
-echo 500 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/up_rate_limit_us
+echo 1000 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/up_rate_limit_us
 echo 20000 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/down_rate_limit_us
 echo 1267200 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
 echo 652800 > /sys/devices/system/cpu/cpu6/cpufreq/scaling_min_freq
