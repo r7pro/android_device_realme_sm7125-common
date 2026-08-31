@@ -174,6 +174,9 @@ function configure_memory_parameters() {
     # reclaims a bit more proactively without the over-reclaim seen at 100.
     # NOTE: this is the one knob to watch; revert to 1 if anything feels worse.
     echo 30 > /proc/sys/vm/watermark_scale_factor
+    echo 16384 > /proc/sys/vm/min_free_kbytes
+    echo 0 > /proc/sys/vm/extra_free_kbytes
+    echo 100 > /proc/sys/vm/vfs_cache_pressure
     
     # Configure read-ahead values
     configure_read_ahead_kb_values
