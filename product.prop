@@ -66,3 +66,6 @@ persist.sys.perf.scroll_opt=true
 persist.sys.perf.scroll_opt.heavy_app=1
 sys.fflag.override.settings_seamless_transfer=true
 wifi.aware.interface=wifi-aware0
+
+# Bluetooth SBC HD higher bitrate
+persist.bluetooth.sbc_hd_higher_bitrate=1
