@@ -23,6 +23,8 @@
             android:icon="@android:drawable/sym_def_app_icon"
             android:label="@string/RealmeParts"
             android:theme="@style/AppTheme"
+            android:defaultToDeviceProtectedStorage="true"
+            android:directBootAware="true"
             >
 
         <!-- stub to ensure its loaded - DO NOT REMOVE -->
@@ -75,14 +77,14 @@
         <receiver android:name=".BootReceiver"
                   android:exported="true" >
           <intent-filter>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />
           </intent-filter>
         </receiver>
 
         <service android:name=".doze.DozeService"
-                 android:permission="RealmeDozeService">
-        </service>
+                 android:exported="false" />
 
         <service android:name=".battery.ChargeLimitService"
                  android:exported="false" />

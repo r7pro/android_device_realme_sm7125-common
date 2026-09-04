@@ -77,10 +77,14 @@ public final class DozeUtils {
             Context con = context.createPackageContext("com.android.systemui", 0);
             int id = con.getResources().getIdentifier("doze_proximity_check_before_pulse",
                     "bool", "com.android.systemui");
-            return con.getResources().getBoolean(id);
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
+            if (id != 0) {
+                return con.getResources().getBoolean(id);
+            }
+        } catch (Exception e) {
+            // Fallback to sensor availability check
         }
+        SensorManager sm = context.getSystemService(SensorManager.class);
+        return sm != null && sm.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null;
     }
 
     protected static boolean enableDoze(Context context, boolean enable) {
@@ -95,8 +99,9 @@ public final class DozeUtils {
 
     public static void launchDozePulse(Context context) {
         if (DEBUG) Log.d(TAG, "Launch doze pulse");
-        context.sendBroadcastAsUser(new Intent(DOZE_INTENT),
-                new UserHandle(UserHandle.USER_CURRENT));
+        Intent intent = new Intent(DOZE_INTENT);
+        intent.setPackage("com.android.systemui");
+        context.sendBroadcastAsUser(intent, UserHandle.CURRENT);
     }
 
     protected static boolean enableAlwaysOn(Context context, boolean enable) {
