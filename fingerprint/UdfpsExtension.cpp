@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2024 The LineageOS Project
+ * Copyright (C) 2020 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,16 @@
 
 #include <compositionengine/UdfpsExtension.h>
 
-#if __has_include(<display/drm/sde_drm.h>)
-#include <display/drm/sde_drm.h>
-#elif __has_include(<drm/sde_drm.h>)
-#include <drm/sde_drm.h>
-#endif
+uint32_t getUdfpsZOrder(uint32_t z, bool touched) {
+    if (touched)
+        return 0x41000033;
+    return z;
+}
 
 uint32_t getUdfpsDimZOrder(uint32_t z) {
-    return 0x41000005;
+    return z;
 }
 
-uint32_t getUdfpsZOrder(uint32_t z, bool touched) {
-#ifdef FOD_PRESSED_LAYER_ZORDER
-    return touched ? z | FOD_PRESSED_LAYER_ZORDER : z;
-#else
-    return touched ? 0x41000033 : z;
-#endif
-}
-
-uint64_t getUdfpsUsageBits(uint64_t usageBits, bool /*touched*/) {
+uint64_t getUdfpsUsageBits(uint64_t usageBits, bool) {
     return usageBits;
 }

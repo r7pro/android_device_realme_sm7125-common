@@ -30,7 +30,6 @@
 #define FP_PRESS_PATH "/sys/kernel/oppo_display/notify_fppress"
 #define DIMLAYER_PATH "/sys/kernel/oppo_display/dimlayer_hbm"
 #define POWER_STATUS_PATH "/sys/kernel/oppo_display/power_status"
-#define NOTIFY_BLANK_PATH "/sys/kernel/oppo_display/notify_panel_blank"
 #define PRJNAME_PATH "/proc/oplusVersion/prjName"
 
 namespace android {
@@ -74,6 +73,10 @@ public:
     OplusClientCallback(sp<android::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprintClientCallback> clientCallback) : mClientCallback(clientCallback) {}
     Return<void> onEnrollResult(uint64_t deviceId, uint32_t fingerId,
         uint32_t groupId, uint32_t remaining) {
+        if (remaining == 0) {
+            set(FP_PRESS_PATH, 0);
+            set(DIMLAYER_PATH, 0);
+        }
         return mClientCallback->onEnrollResult(deviceId, fingerId, groupId, remaining);
     }
 
@@ -84,10 +87,16 @@ public:
 
     Return<void> onAuthenticated(uint64_t deviceId, uint32_t fingerId, uint32_t groupId,
         const hidl_vec<uint8_t>& token) {
+        if (fingerId > 0) {
+            set(FP_PRESS_PATH, 0);
+            set(DIMLAYER_PATH, 0);
+        }
         return mClientCallback->onAuthenticated(deviceId, fingerId, groupId, token);
     }
 
     Return<void> onError(uint64_t deviceId, vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError error, int32_t vendorCode) {
+        set(FP_PRESS_PATH, 0);
+        set(DIMLAYER_PATH, 0);
         return mClientCallback->onError(deviceId, OplusToAOSPFingerprintError(error), vendorCode);
     }
 
@@ -101,13 +110,26 @@ public:
         return mClientCallback->onEnumerate(deviceId, fingerId, groupId, remaining);
     }
 
-    Return<void> onTouchUp(uint64_t deviceId) { return Void(); }
     Return<void> onTouchDown(uint64_t deviceId) { return Void(); }
-    Return<void> onSyncTemplates(uint64_t deviceId, const hidl_vec<uint32_t>& fingerId, uint32_t remaining) { return Void(); }
-    Return<void> onFingerprintCmd(int32_t deviceId, const hidl_vec<uint32_t>& groupId, uint32_t remaining) { return Void(); }
-    Return<void> onImageInfoAcquired(uint32_t type, uint32_t quality, uint32_t match_score) { return Void(); }
+    Return<void> onTouchUp(uint64_t deviceId) { return Void(); }
     Return<void> onMonitorEventTriggered(uint32_t type, const hidl_string& data) { return Void(); }
+    Return<void> onImageInfoAcquired(uint32_t type, uint32_t quality, uint32_t match_score) { return Void(); }
+    Return<void> onSyncTemplates(uint64_t deviceId, const hidl_vec<uint32_t>& fingerId, uint32_t remaining) {
+        if (mClientCallback == nullptr) {
+            return Void();
+        }
+        if (fingerId.size() == 0) {
+            mClientCallback->onEnumerate(deviceId, 0, 0, 0);
+            return Void();
+        }
+        for (size_t i = 0; i < fingerId.size(); i++) {
+            uint32_t rem = fingerId.size() - 1 - i;
+            mClientCallback->onEnumerate(deviceId, fingerId[i], 0, rem);
+        }
+        return Void();
+    }
     Return<void> onEngineeringInfoUpdated(uint32_t length, const hidl_vec<uint32_t>& keys, const hidl_vec<hidl_string>& values) { return Void(); }
+    Return<void> onFingerprintCmd(int32_t deviceId, const hidl_vec<int8_t>& result, uint32_t remaining) { return Void(); }
 
 private:
     sp<android::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprintClientCallback> mClientCallback;
@@ -187,11 +209,14 @@ Return<uint64_t> BiometricsFingerprint::getAuthenticatorId()  {
 }
 
 Return<RequestStatus> BiometricsFingerprint::cancel()  {
+    if (isUdfps(0)) {
+        set(DIMLAYER_PATH, 0);
+        set(FP_PRESS_PATH, 0);
+    }
     RequestStatus ret = OplusToAOSPRequestStatus(mOplusBiometricsFingerprint->cancel());
     if (ret == RequestStatus::SYS_OK) {
-        const uint64_t devId = mOplusBiometricsFingerprint->setNotify(mOplusClientCallback);
         vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError err = vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError::ERROR_CANCELED;
-        if (!mOplusClientCallback->onError(devId, err, 0).isOk()) {
+        if (!mOplusClientCallback->onError(0, err, 0).isOk()) {
             ALOGE("failed to invoke fingerprint onError callback");
         }
     }
@@ -216,38 +241,25 @@ Return<RequestStatus> BiometricsFingerprint::authenticate(uint64_t operationId, 
 }
 
 Return<bool> BiometricsFingerprint::isUdfps(uint32_t) {
-    if (get(PRJNAME_PATH, "") == "206B1") {
-        return true;
-    }
-    LOG(INFO) << "sagar : device : " << get(PRJNAME_PATH, "");
-    return false;
+    static const bool is_udfps = (get(PRJNAME_PATH, "") == "206B1");
+    return is_udfps;
 }
 
 Return<void> BiometricsFingerprint::onShowUdfpsOverlay() {
-    if (isUdfps(0)) {
-        if (isDozeMode()) {
-            set(NOTIFY_BLANK_PATH, 1);
-            set(DIMLAYER_PATH, 1);
-            set(FP_PRESS_PATH, 1);
-        } else {
-            std::thread([]() {
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                set(DIMLAYER_PATH, 1);
-            }).detach();
-        }
-    }
     return Void();
 }
 
 Return<void> BiometricsFingerprint::onFingerUp() {
     if (isUdfps(0)) {
         set(FP_PRESS_PATH, 0);
+        set(DIMLAYER_PATH, 0);
     }
     return Void();
 }
 
 Return<bool> BiometricsFingerprint::isDozeMode() {
-    return (get(POWER_STATUS_PATH, 0) == 1) || (get(POWER_STATUS_PATH, 0) == 3);
+    int status = get(POWER_STATUS_PATH, 0);
+    return (status == 1) || (status == 3);
 }
 
 Return<void> BiometricsFingerprint::onFingerDown(uint32_t, uint32_t, float, float) {
