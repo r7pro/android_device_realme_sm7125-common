@@ -109,7 +109,7 @@ public class ProximitySensor implements SensorEventListener {
         mInPocketTime = 0;
         submit(() -> {
             mSensorManager.registerListener(this, mSensor,
-                    SensorManager.SENSOR_DELAY_GAME);
+                    SensorManager.SENSOR_DELAY_NORMAL);
         });
     }
 

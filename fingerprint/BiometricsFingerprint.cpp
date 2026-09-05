@@ -64,6 +64,11 @@ static std::string get(const std::string& path, const std::string& def) {
     return file.fail() ? def : result;
 }
 
+static bool isDeviceUdfps() {
+    static const bool is_udfps = (get(PRJNAME_PATH, "") == "206B1");
+    return is_udfps;
+}
+
 BiometricsFingerprint::BiometricsFingerprint() {
     mOplusBiometricsFingerprint = vendor::oplus::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprint::getService();
 }
@@ -73,7 +78,7 @@ public:
     OplusClientCallback(sp<android::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprintClientCallback> clientCallback) : mClientCallback(clientCallback) {}
     Return<void> onEnrollResult(uint64_t deviceId, uint32_t fingerId,
         uint32_t groupId, uint32_t remaining) {
-        if (remaining == 0) {
+        if (isDeviceUdfps()) {
             set(FP_PRESS_PATH, 0);
             set(DIMLAYER_PATH, 0);
         }
@@ -82,12 +87,15 @@ public:
 
     Return<void> onAcquired(uint64_t deviceId, vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintAcquiredInfo acquiredInfo,
         int32_t vendorCode) {
+        if (mClientCallback == nullptr) {
+            return Void();
+        }
         return mClientCallback->onAcquired(deviceId, OplusToAOSPFingerprintAcquiredInfo(acquiredInfo), vendorCode);
     }
 
     Return<void> onAuthenticated(uint64_t deviceId, uint32_t fingerId, uint32_t groupId,
         const hidl_vec<uint8_t>& token) {
-        if (fingerId > 0) {
+        if (isDeviceUdfps()) {
             set(FP_PRESS_PATH, 0);
             set(DIMLAYER_PATH, 0);
         }
@@ -95,8 +103,10 @@ public:
     }
 
     Return<void> onError(uint64_t deviceId, vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError error, int32_t vendorCode) {
-        set(FP_PRESS_PATH, 0);
-        set(DIMLAYER_PATH, 0);
+        if (isDeviceUdfps()) {
+            set(FP_PRESS_PATH, 0);
+            set(DIMLAYER_PATH, 0);
+        }
         return mClientCallback->onError(deviceId, OplusToAOSPFingerprintError(error), vendorCode);
     }
 
@@ -111,7 +121,12 @@ public:
     }
 
     Return<void> onTouchDown(uint64_t deviceId) { return Void(); }
-    Return<void> onTouchUp(uint64_t deviceId) { return Void(); }
+    Return<void> onTouchUp(uint64_t deviceId) { 
+        if (isDeviceUdfps()) {
+            set(FP_PRESS_PATH, 0);
+            set(DIMLAYER_PATH, 0);
+        }
+        return Void(); }
     Return<void> onMonitorEventTriggered(uint32_t type, const hidl_string& data) { return Void(); }
     Return<void> onImageInfoAcquired(uint32_t type, uint32_t quality, uint32_t match_score) { return Void(); }
     Return<void> onSyncTemplates(uint64_t deviceId, const hidl_vec<uint32_t>& fingerId, uint32_t remaining) {
@@ -241,8 +256,7 @@ Return<RequestStatus> BiometricsFingerprint::authenticate(uint64_t operationId, 
 }
 
 Return<bool> BiometricsFingerprint::isUdfps(uint32_t) {
-    static const bool is_udfps = (get(PRJNAME_PATH, "") == "206B1");
-    return is_udfps;
+    return isDeviceUdfps();
 }
 
 Return<void> BiometricsFingerprint::onShowUdfpsOverlay() {
