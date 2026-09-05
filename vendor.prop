@@ -170,6 +170,9 @@ ro.hardware.nfc_nci=nqx.default
 # PASR
 vendor.power.pasr.enabled=true
 
+# Perf
+vendor.perf.framepacing.enable=1
+
 # Radio
 persist.vendor.data.iwlan.enable=true
 persist.vendor.data.mode=concurrent
@@ -192,7 +195,7 @@ persist.vendor.sensors.support_direct_channel=false
 persist.vendor.sensors.allow_non_default_discovery=true
 
 # SOC
-ro.soc.manufacturer=QTI
+ro.soc.manufacturer=Qualcomm
 ro.soc.model=SM7125
 
 # Usb

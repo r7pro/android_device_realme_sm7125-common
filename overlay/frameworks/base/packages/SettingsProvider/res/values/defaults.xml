@@ -42,4 +42,6 @@
    
     <!-- Speed up the animations -->
     <fraction name="def_window_transition_scale">50%</fraction>
+    <!-- Volume panel on left by default (volume buttons are on the left side) -->
+    <bool name="def_volume_panel_on_left">true</bool>
 </resources>
