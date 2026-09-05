@@ -145,7 +145,6 @@ debug.sf.disable_client_composition_cache=0
 ro.vendor.qti.cgroup_follow.enable=true
 persist.vendor.qti.inputopts.enable=true
 persist.vendor.qti.inputopts.movetouchslop=0.6
-ro.qcom.adreno.qgl.ShaderStorageImageExtendedFormats=0
 
 # FM
 vendor.hw.fm.init=0

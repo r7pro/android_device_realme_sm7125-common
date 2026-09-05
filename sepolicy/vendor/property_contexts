@@ -14,3 +14,6 @@ sys.oppo.                               u:object_r:oppo_debug_prop:s0
 
 # Bluetooth LEA
 ro.vendor.bluetooth.lea.*               u:object_r:vendor_bluetooth_prop:s0
+
+# Camera
+persist.vendor.camera.gyro.disable      u:object_r:vendor_camera_prop:s0
