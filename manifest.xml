@@ -659,6 +659,28 @@
             <instance>oplus_slot2</instance>
         </interface>
     </hal>
+
+    <hal format="hidl">
+        <name>vendor.oplus.hardware.orms.ormsHalService</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IOrmsHalService</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+
+    <hal format="hidl" optional="true">
+        <name>vendor.oplus.hardware.orms</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IOrmsHalProxy</name>
+            <instance>ORMS_HAL_PROXY</instance>
+            <instance>default</instance>
+        </interface>
+    </hal>
+
     <hal format="hidl">
         <name>vendor.qti.hardware.data.iwlan</name>
         <transport>hwbinder</transport>
