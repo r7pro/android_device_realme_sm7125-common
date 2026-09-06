@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CONFIGURE_DISPLAY_BRIGHTNESS" />
 	
     <protected-broadcast android:name="com.android.systemui.doze.pulse" />
 
@@ -87,6 +88,9 @@
                  android:exported="false" />
 
         <service android:name=".battery.ChargeLimitService"
+                 android:exported="false" />
+
+        <service android:name=".display.AutoBrightnessService"
                  android:exported="false" />
 
         <activity
