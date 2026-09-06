@@ -90,6 +90,13 @@ public:
         if (mClientCallback == nullptr) {
             return Void();
         }
+
+        if (isDeviceUdfps()) {
+            if (acquiredInfo == vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintAcquiredInfo::ACQUIRED_TOO_FAST) {
+                return Void();
+            }
+        }
+
         return mClientCallback->onAcquired(deviceId, OplusToAOSPFingerprintAcquiredInfo(acquiredInfo), vendorCode);
     }
 
