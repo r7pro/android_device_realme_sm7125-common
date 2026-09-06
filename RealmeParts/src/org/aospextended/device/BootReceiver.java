@@ -33,6 +33,11 @@ import org.aospextended.device.doze.DozeUtils;
 import org.aospextended.device.vibration.VibratorStrengthPreference;
 import org.aospextended.device.gpu.GpuBoostSettings;
 import org.aospextended.device.battery.ChargeLimitSettings;
+import org.aospextended.device.display.DcDimmingSettings;
+import org.aospextended.device.display.HbmSettings;
+import org.aospextended.device.touch.GameTouchSettings;
+import org.aospextended.device.touch.EdgeMistouchSettings;
+import org.aospextended.device.otg.OtgSettings;
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -40,7 +45,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         if (Intent.ACTION_LOCKED_BOOT_COMPLETED.equals(intent.getAction())
                 || Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-            enableComponent(context, TouchGestures.class.getName());
+            enableComponent(context, org.aospextended.device.gestures.TouchGesturesActivity.class.getName());
             SharedPreferences prefs = Utils.getSharedPreferences(context);
             TouchGestures.enableGestures(prefs.getBoolean(
                 TouchGestures.PREF_GESTURE_ENABLE, false));
@@ -48,10 +53,16 @@ public class BootReceiver extends BroadcastReceiver {
                 TouchGestures.PREF_DT2W_ENABLE, true));
             GpuBoostSettings.restore(context);
             ChargeLimitSettings.restore(context);
+            DcDimmingSettings.restore(context);
+            HbmSettings.restore(context);
+            GameTouchSettings.restore(context);
+            EdgeMistouchSettings.restore(context);
+            OtgSettings.restore(context);
         }
         DozeUtils.checkDozeService(context);
 //        VibratorStrengthPreference.restore(context);
     }
+
 
     private void enableComponent(Context context, String component) {
         ComponentName name = new ComponentName(context, component);

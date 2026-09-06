@@ -85,6 +85,29 @@
         <service android:name=".battery.ChargeLimitService"
                  android:exported="false" />
 
+        <service
+            android:name=".display.HbmTileService"
+            android:icon="@drawable/ic_hbm"
+            android:label="@string/hbm_title"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".otg.OtgTileService"
+            android:icon="@drawable/ic_otg"
+            android:label="@string/otg_tile_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+
         <activity
             android:name=".doze.DozeSettingsActivity"
             android:label="@string/ambient_display_title"

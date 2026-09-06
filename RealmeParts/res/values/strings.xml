@@ -195,4 +195,30 @@
     <string name="charge_limit_level_title">Charge limit level</string>
     <string name="charge_limit_level_summary">Charging pauses at this level and resumes if it drops below it</string>
 
+    <!-- Display (AMOLED) -->
+    <string name="display_title">Display</string>
+    <string name="dc_dimming_title">DC Dimming</string>
+    <string name="dc_dimming_summary">Prevent screen flicker at low brightness by adjusting DC voltage instead of PWM. Reduces eye fatigue</string>
+    <string name="hbm_title">High brightness mode</string>
+    <string name="hbm_summary">Overdrive screen brightness beyond standard maximum for sunlight visibility</string>
+
+    <!-- Gaming & Touch -->
+    <string name="touch_title">Touch &amp; Gaming</string>
+    <string name="game_touch_title">Game touch mode</string>
+    <string name="game_touch_summary">Boost touchscreen sampling rate to reduce touch latency during gaming</string>
+    <string name="edge_mistouch_title">Edge mistouch prevention</string>
+    <string name="edge_mistouch_summary">Suppress accidental palm and touch inputs near the screen edges in landscape mode</string>
+
+    <!-- Audio / Clear Speaker -->
+    <string name="audio_title">Audio</string>
+    <string name="clear_speaker_title">Clear speaker</string>
+    <string name="clear_speaker_summary">Play a 30-second high-frequency sound to clear water and dust from the speaker</string>
+    <string name="clear_speaker_running">Clearing speaker… Tap again to stop (%d seconds remaining)</string>
+
+    <!-- USB OTG -->
+    <string name="usb_title">USB</string>
+    <string name="otg_title">USB OTG</string>
+    <string name="otg_summary">Enable USB host mode for USB-C earphones, DACs, and storage devices</string>
+    <string name="otg_tile_label">OTG</string>
 </resources>
+

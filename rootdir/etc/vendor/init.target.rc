@@ -162,6 +162,18 @@ on boot
     chmod 0666 /dev/stune/background/cgroup.procs
     chmod 0666 /dev/stune/top-app/cgroup.procs
 
+    # Display nodes for RealmeParts
+    chown system system /sys/kernel/oppo_display/dimlayer_bl_en
+    chmod 0666 /sys/kernel/oppo_display/dimlayer_bl_en
+    chown system system /sys/kernel/oppo_display/hbm
+    chmod 0666 /sys/kernel/oppo_display/hbm
+
+    # Touchpanel nodes for RealmeParts
+    chown system system /proc/touchpanel/game_switch_enable
+    chmod 0666 /proc/touchpanel/game_switch_enable
+    chown system system /proc/touchpanel/oplus_tp_limit_enable
+    chmod 0666 /proc/touchpanel/oplus_tp_limit_enable
+
 on property:sys.boot_completed=1
     # Setup runtime cpusets
     write /dev/cpuset/top-app/cpus 0-7
@@ -189,6 +201,8 @@ on property:sys.boot_completed=1
     setprop vendor.usb.dpl.inst.name "dpl"
     setprop vendor.usb.qdss.inst.name "qdss"
     setprop sys.usb.configfs 1
+    write /sys/class/power_supply/usb/otg_switch 1
+
 
 #start camera server as daemon
 #service qcamerasvr /system/bin/mm-qcamera-daemon

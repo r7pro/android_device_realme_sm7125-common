@@ -36,6 +36,12 @@ import org.aospextended.device.vibration.VibratorStrengthPreference;
 import org.aospextended.device.gpu.GpuBoostSettings;
 import org.aospextended.device.battery.ChargeLimitSettings;
 import org.aospextended.device.battery.ChargeLimitService;
+import org.aospextended.device.display.DcDimmingSettings;
+import org.aospextended.device.display.HbmSettings;
+import org.aospextended.device.touch.GameTouchSettings;
+import org.aospextended.device.touch.EdgeMistouchSettings;
+import org.aospextended.device.speaker.ClearSpeakerHelper;
+import org.aospextended.device.otg.OtgSettings;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -64,10 +70,39 @@ public class RealmeParts extends PreferenceFragmentCompat implements
     private ListPreference mGpuBoost;
     private SwitchPreference mChargeLimitEnable;
     private ListPreference mChargeLimitLevel;
+    private SwitchPreference mDcDimming;
+    private SwitchPreference mHbm;
+    private SwitchPreference mGameTouch;
+    private SwitchPreference mEdgeMistouch;
+    private SwitchPreference mClearSpeaker;
+    private SwitchPreference mOtg;
 
     @Override
+
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.RealmeParts, rootKey);
+
+        PreferenceCategory display = (PreferenceCategory) getPreferenceScreen()
+                 .findPreference("display_category");
+        mDcDimming = (SwitchPreference) findPreference(DcDimmingSettings.KEY);
+        if (DcDimmingSettings.isSupported()) {
+            mDcDimming.setChecked(DcDimmingSettings.isEnabled(getContext()));
+            mDcDimming.setOnPreferenceChangeListener(this);
+        } else if (display != null && mDcDimming != null) {
+            display.removePreference(mDcDimming);
+        }
+
+        mHbm = (SwitchPreference) findPreference(HbmSettings.KEY);
+        if (HbmSettings.isSupported()) {
+            mHbm.setChecked(HbmSettings.isEnabled(getContext()));
+            mHbm.setOnPreferenceChangeListener(this);
+        } else if (display != null && mHbm != null) {
+            display.removePreference(mHbm);
+        }
+
+        if (display != null && display.getPreferenceCount() == 0) {
+            getPreferenceScreen().removePreference(display);
+        }
 
         PreferenceCategory gestures = (PreferenceCategory) getPreferenceScreen()
                  .findPreference("gestures_category");
@@ -93,6 +128,28 @@ public class RealmeParts extends PreferenceFragmentCompat implements
                 return true;
             }
         });
+
+        PreferenceCategory touch = (PreferenceCategory) getPreferenceScreen()
+                 .findPreference("touch_category");
+        mGameTouch = (SwitchPreference) findPreference(GameTouchSettings.KEY);
+        if (GameTouchSettings.isSupported()) {
+            mGameTouch.setChecked(GameTouchSettings.isEnabled(getContext()));
+            mGameTouch.setOnPreferenceChangeListener(this);
+        } else if (touch != null && mGameTouch != null) {
+            touch.removePreference(mGameTouch);
+        }
+
+        mEdgeMistouch = (SwitchPreference) findPreference(EdgeMistouchSettings.KEY);
+        if (EdgeMistouchSettings.isSupported()) {
+            mEdgeMistouch.setChecked(EdgeMistouchSettings.isEnabled(getContext()));
+            mEdgeMistouch.setOnPreferenceChangeListener(this);
+        } else if (touch != null && mEdgeMistouch != null) {
+            touch.removePreference(mEdgeMistouch);
+        }
+
+        if (touch != null && touch.getPreferenceCount() == 0) {
+            getPreferenceScreen().removePreference(touch);
+        }
 
         PreferenceCategory performance = (PreferenceCategory) getPreferenceScreen()
                  .findPreference("performance_category");
@@ -125,6 +182,25 @@ public class RealmeParts extends PreferenceFragmentCompat implements
             getPreferenceScreen().removePreference(battery);
         }
 
+        mClearSpeaker = (SwitchPreference) findPreference("clear_speaker");
+        if (mClearSpeaker != null) {
+            mClearSpeaker.setChecked(ClearSpeakerHelper.getInstance().isRunning());
+            mClearSpeaker.setOnPreferenceChangeListener(this);
+        }
+
+        PreferenceCategory usb = (PreferenceCategory) getPreferenceScreen()
+                 .findPreference("usb_category");
+        mOtg = (SwitchPreference) findPreference(OtgSettings.KEY);
+        if (OtgSettings.isSupported()) {
+            mOtg.setChecked(OtgSettings.isEnabled(getContext()));
+            mOtg.setOnPreferenceChangeListener(this);
+        } else if (usb != null && mOtg != null) {
+            usb.removePreference(mOtg);
+        }
+
+        if (usb != null && usb.getPreferenceCount() == 0) {
+            getPreferenceScreen().removePreference(usb);
+        }
 
 /*        PreferenceCategory vib_strength = (PreferenceCategory) getPreferenceScreen()
                  .findPreference("vib_strength_category");
@@ -156,7 +232,60 @@ public class RealmeParts extends PreferenceFragmentCompat implements
             Utils.getSharedPreferences(getContext()).edit()
                     .putString(ChargeLimitSettings.KEY_LEVEL, value).apply();
             ChargeLimitService.start(getContext());
+        } else if (DcDimmingSettings.KEY.equals(key)) {
+            boolean enabled = (Boolean) newValue;
+            DcDimmingSettings.setEnabled(enabled);
+            Utils.getSharedPreferences(getContext()).edit()
+                    .putBoolean(DcDimmingSettings.KEY, enabled).apply();
+        } else if (HbmSettings.KEY.equals(key)) {
+            boolean enabled = (Boolean) newValue;
+            HbmSettings.setEnabled(getContext(), enabled);
+        } else if (GameTouchSettings.KEY.equals(key)) {
+            boolean enabled = (Boolean) newValue;
+            GameTouchSettings.setEnabled(enabled);
+            Utils.getSharedPreferences(getContext()).edit()
+                    .putBoolean(GameTouchSettings.KEY, enabled).apply();
+        } else if (EdgeMistouchSettings.KEY.equals(key)) {
+            boolean enabled = (Boolean) newValue;
+            EdgeMistouchSettings.setEnabled(enabled);
+            Utils.getSharedPreferences(getContext()).edit()
+                    .putBoolean(EdgeMistouchSettings.KEY, enabled).apply();
+        } else if (OtgSettings.KEY.equals(key)) {
+            boolean enabled = (Boolean) newValue;
+            OtgSettings.setEnabled(getContext(), enabled);
+        } else if ("clear_speaker".equals(key)) {
+
+            boolean enable = (Boolean) newValue;
+            if (enable) {
+                ClearSpeakerHelper.getInstance().start(getContext(), new ClearSpeakerHelper.Listener() {
+                    @Override
+                    public void onProgress(int secondsRemaining) {
+                        if (mClearSpeaker != null && isAdded()) {
+                            mClearSpeaker.setSummary(getString(R.string.clear_speaker_running, secondsRemaining));
+                        }
+                    }
+
+                    @Override
+                    public void onFinished() {
+                        if (mClearSpeaker != null && isAdded()) {
+                            mClearSpeaker.setChecked(false);
+                            mClearSpeaker.setSummary(R.string.clear_speaker_summary);
+                        }
+                    }
+                });
+            } else {
+                ClearSpeakerHelper.getInstance().stop();
+                mClearSpeaker.setSummary(R.string.clear_speaker_summary);
+            }
         }
         return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (ClearSpeakerHelper.getInstance().isRunning()) {
+            ClearSpeakerHelper.getInstance().stop();
+        }
     }
 }
