@@ -68,11 +68,7 @@
         <activity
             android:name=".gestures.TouchGesturesActivity"
             android:label="@string/screen_off_gestures"
-            android:exported="true">
-          <intent-filter>
-                <action android:name="com.android.settings.action.EXTRA_SETTINGS" />
-          </intent-filter>
-        </activity>
+            android:exported="true" />
 
         <receiver android:name=".BootReceiver"
                   android:exported="true" >
