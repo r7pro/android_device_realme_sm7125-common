@@ -474,6 +474,9 @@
          auto-brightness adjustment setting. -->
     <fraction name="config_autoBrightnessAdjustmentMaxGamma">300%</fraction>
 
+    <!-- How long user adjustments persist (in milliseconds) before expiring when display policy is non-interactive. -->
+    <integer name="config_autoBrightnessShortTermModelTimeout">2000</integer>
+
     <!-- Stability requirements in milliseconds for accepting a new brightness level.  This is used
          for debouncing the light sensor.  Different constants are used to debounce the light sensor
          when adapting to brighter or darker environments.  This parameter controls how quickly

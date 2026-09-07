@@ -37,8 +37,8 @@ public class ProximitySensor implements SensorEventListener {
     private static final boolean DEBUG = Utils.DEBUG;
     private static final String TAG = "ProximitySensor";
 
-    // Maximum time for the hand to cover the sensor: 2.5s
-    private static final long HANDWAVE_MAX_DELTA_NS = 2500L * 1000 * 1000;
+    // Maximum time for the hand to cover the sensor: 1200ms
+    private static final long HANDWAVE_MAX_DELTA_NS = 1200L * 1000 * 1000;
 
     // Minimum time until the device is considered to have been in the pocket: 2s
     private static final long POCKET_MIN_DELTA_NS = 2000L * 1000 * 1000;
@@ -78,7 +78,7 @@ public class ProximitySensor implements SensorEventListener {
                 mWakeLock.acquire(WAKELOCK_TIMEOUT_MS);
                 DozeUtils.launchDozePulse(mContext);
             }
-        } else {
+        } else if (!mSawNear && isNear) {
             mInPocketTime = event.timestamp;
         }
         mSawNear = isNear;
