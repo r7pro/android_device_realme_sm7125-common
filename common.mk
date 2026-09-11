@@ -20,7 +20,7 @@ $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 $(call inherit-product, hardware/qcom-caf/common/common.mk)
 
 # UDFPS
-$(call soong_config_set,surfaceflinger,udfps_lib,//$(LOCAL_PATH):libudfps_extension.realme_sm7125)
+$(call soong_config_set,surfaceflinger,udfps_lib,//$(LOCAL_PATH)/fingerprint:libudfps_extension.realme_sm7125)
 
 # speaker layout channel mask
 $(call soong_config_set_bool,android_hardware_audio,skip_speaker_layout_channel_mask_field,true)
