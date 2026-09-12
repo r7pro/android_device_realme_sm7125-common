@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright (c) 2020 The AospExtended Project
+    Copyright (C) 2024 The Android Open Source Project
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,11 +14,19 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:height="24dp"
-    android:width="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-    <path android:fillColor="#000" android:pathData="M9,7V17H11V13H11.8L13,17H15L13.76,12.85C14.5,12.55 15,11.84 15,11V9A2,2 0 0,0 13,7H9M11,9H13V11H11V9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z" />
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:fillColor="?attr/colorPrimaryContainer"
+        android:pathData="M20,0C31.05,0 40,8.95 40,20C40,31.05 31.05,40 20,40C8.95,40 0,31.05 0,20C0,8.95 8.95,0 20,0Z" />
+    <group
+        android:translateX="8"
+        android:translateY="8">
+        <path
+            android:fillColor="?attr/colorOnPrimaryContainer"
+            android:pathData="M17,18L7,18L7,6L17,6L17,7L19,7L19,3C19,1.895 18.105,1 17,1L7,1C5.895,1 5,1.895 5,3L5,21C5,22.105 5.895,23 7,23L17,23C18.105,23 19,22.105 19,21L19,17L17,17L17,18ZM7,3L17,3L17,4L7,4L7,3ZM17,21L7,21L7,20L17,20L17,21ZM17.94,12.06L20,13L17.94,13.94L17,16L16.06,13.94L14,13L16.06,12.06L17,10L17.94,12.06ZM20.63,8.38L22,9L20.63,9.63L20,11L19.38,9.63L18,9L19.38,8.38L20,7L20.63,8.38Z" />
+    </group>
 </vector>
