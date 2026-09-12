@@ -29,6 +29,7 @@
 
 #define FP_PRESS_PATH "/sys/kernel/oppo_display/notify_fppress"
 #define DIMLAYER_PATH "/sys/kernel/oppo_display/dimlayer_hbm"
+#define NOTIFY_BLANK_PATH "/sys/kernel/oppo_display/notify_panel_blank"
 #define POWER_STATUS_PATH "/sys/kernel/oppo_display/power_status"
 #define PRJNAME_PATH "/proc/oplusVersion/prjName"
 
@@ -128,12 +129,7 @@ public:
     }
 
     Return<void> onTouchDown(uint64_t deviceId) { return Void(); }
-    Return<void> onTouchUp(uint64_t deviceId) { 
-        if (isDeviceUdfps()) {
-            set(FP_PRESS_PATH, 0);
-            set(DIMLAYER_PATH, 0);
-        }
-        return Void(); }
+    Return<void> onTouchUp(uint64_t deviceId) { return Void(); }
     Return<void> onMonitorEventTriggered(uint32_t type, const hidl_string& data) { return Void(); }
     Return<void> onImageInfoAcquired(uint32_t type, uint32_t quality, uint32_t match_score) { return Void(); }
     Return<void> onSyncTemplates(uint64_t deviceId, const hidl_vec<uint32_t>& fingerId, uint32_t remaining) {

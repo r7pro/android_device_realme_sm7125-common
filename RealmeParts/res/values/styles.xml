@@ -17,13 +17,16 @@
     <!-- Modern SubSettings-style theme: DeviceDefault.Settings with the decor
          ActionBar removed so CollapsingToolbarBaseActivity can install its own
          collapsing Material toolbar (matches the system Settings app on A12+). -->
-    <style name="AppTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+    <style name="AppTheme" parent="@style/Theme.SubSettingsBase">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:colorControlHighlight">@color/preference_ripple_color</item>
+        <item name="android:colorAccent">?android:attr/colorAccent</item>
         <item name="preferenceTheme">@style/PreferenceTheme</item>
     </style>
 
     <style name="PreferenceTheme" parent="@style/PreferenceThemeOverlay.SettingsBase">
+        <item name="android:colorControlHighlight">@color/preference_ripple_color</item>
     </style>
 
     <style name="Theme.Main.SwitchBar.Switch">
