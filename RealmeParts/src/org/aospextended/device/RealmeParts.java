@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.Preference;
+import com.android.settingslib.widget.AdaptiveIcon;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceManager;
@@ -125,14 +126,22 @@ public class RealmeParts extends PreferenceFragmentCompat implements
             getPreferenceScreen().removePreference(battery);
         }
 
+        setupPreferenceIcons();
+    }
 
-/*        PreferenceCategory vib_strength = (PreferenceCategory) getPreferenceScreen()
-                 .findPreference("vib_strength_category");
-        mVibratorStrength = (VibratorStrengthPreference) findPreference(VibratorStrengthPreference.KEY_VIBSTRENGTH);
-        if (!VibratorStrengthPreference.isSupported()) {
-            getPreferenceScreen().removePreference(vib_strength);
+    private void setupPreferenceIcons() {
+        wrapIcon(findPreference("screen_gestures"), R.color.icon_bg_gestures);
+        wrapIcon(findPreference("doze"), R.color.icon_bg_doze);
+        wrapIcon(findPreference(GpuBoostSettings.KEY), R.color.icon_bg_performance);
+        wrapIcon(findPreference(ChargeLimitSettings.KEY_ENABLE), R.color.icon_bg_battery);
+    }
+
+    private void wrapIcon(Preference pref, int colorResId) {
+        if (pref != null && pref.getIcon() != null && getContext() != null) {
+            AdaptiveIcon adaptiveIcon = new AdaptiveIcon(getContext(), pref.getIcon());
+            adaptiveIcon.setBackgroundColor(getContext().getColor(colorResId));
+            pref.setIcon(adaptiveIcon);
         }
-*/
     }
 
     @Override
