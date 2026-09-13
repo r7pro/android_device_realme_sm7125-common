@@ -79,7 +79,7 @@ public:
     OplusClientCallback(sp<android::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprintClientCallback> clientCallback) : mClientCallback(clientCallback) {}
     Return<void> onEnrollResult(uint64_t deviceId, uint32_t fingerId,
         uint32_t groupId, uint32_t remaining) {
-        if (isDeviceUdfps()) {
+        if (isDeviceUdfps() && remaining == 0) {
             set(FP_PRESS_PATH, 0);
             set(DIMLAYER_PATH, 0);
         }
@@ -103,7 +103,7 @@ public:
 
     Return<void> onAuthenticated(uint64_t deviceId, uint32_t fingerId, uint32_t groupId,
         const hidl_vec<uint8_t>& token) {
-        if (isDeviceUdfps()) {
+        if (isDeviceUdfps() && fingerId != 0) {
             set(FP_PRESS_PATH, 0);
             set(DIMLAYER_PATH, 0);
         }
@@ -112,8 +112,10 @@ public:
 
     Return<void> onError(uint64_t deviceId, vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError error, int32_t vendorCode) {
         if (isDeviceUdfps()) {
-            set(FP_PRESS_PATH, 0);
-            set(DIMLAYER_PATH, 0);
+            if (error == vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError::ERROR_CANCELED) {
+                set(FP_PRESS_PATH, 0);
+                set(DIMLAYER_PATH, 0);
+            }
         }
         return mClientCallback->onError(deviceId, OplusToAOSPFingerprintError(error), vendorCode);
     }
