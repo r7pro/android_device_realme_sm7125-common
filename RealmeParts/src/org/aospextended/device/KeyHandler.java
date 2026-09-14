@@ -66,14 +66,14 @@ public class KeyHandler implements DeviceKeyHandler {
     private static final int GESTURE_M_SCANCODE = 247;
     private static final int GESTURE_CIRCLE_SCANCODE = 249;
     private static final int GESTURE_TWO_SWIPE_SCANCODE = 250;
-    private static final int GESTURE_UP_ARROW_SCANCODE = 252;
-    private static final int GESTURE_DOWN_ARROW_SCANCODE = 251;
-    private static final int GESTURE_LEFT_ARROW_SCANCODE = 254;
-    private static final int GESTURE_RIGHT_ARROW_SCANCODE = 253;
-    private static final int GESTURE_SWIPE_UP_SCANCODE = 256;
-    private static final int GESTURE_SWIPE_DOWN_SCANCODE = 255;
-    private static final int GESTURE_SWIPE_LEFT_SCANCODE = 258;
-    private static final int GESTURE_SWIPE_RIGHT_SCANCODE = 257;
+    private static final int GESTURE_UP_ARROW_SCANCODE = 251;
+    private static final int GESTURE_DOWN_ARROW_SCANCODE = 252;
+    private static final int GESTURE_LEFT_ARROW_SCANCODE = 253;
+    private static final int GESTURE_RIGHT_ARROW_SCANCODE = 254;
+    private static final int GESTURE_SWIPE_UP_SCANCODE = 255;
+    private static final int GESTURE_SWIPE_DOWN_SCANCODE = 256;
+    private static final int GESTURE_SWIPE_LEFT_SCANCODE = 257;
+    private static final int GESTURE_SWIPE_RIGHT_SCANCODE = 258;
 
     private final Context mContext;
     private Context mAppContext = null;
@@ -97,9 +97,20 @@ public class KeyHandler implements DeviceKeyHandler {
             KeyEvent event = (KeyEvent) msg.obj;
             String action = null;
 
-            // Utils.getSharedPreferences does not work here
-            SharedPreferences mPref = mAppContext.getSharedPreferences("org.aospextended.device_preferences",
-                    Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
+            // Ensure we have the RealmeParts package context (in case early boot fallback was used)
+            if (mAppContext == null || !"org.aospextended.device".equals(mAppContext.getPackageName())) {
+                mAppContext = Utils.getAppContext(mContext);
+            }
+            SharedPreferences mPref;
+            try {
+                Context deContext = (mAppContext != null && mAppContext.isDeviceProtectedStorage())
+                        ? mAppContext : (mAppContext != null ? mAppContext.createDeviceProtectedStorageContext() : mContext.createDeviceProtectedStorageContext());
+                mPref = deContext.getSharedPreferences("org.aospextended.device_preferences",
+                        Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
+            } catch (Exception e) {
+                Slog.e(TAG, "Failed to get SharedPreferences in Direct Boot", e);
+                return;
+            }
 
             switch(event.getScanCode()) {
             case GESTURE_DOUBLE_TAP_SCANCODE:
