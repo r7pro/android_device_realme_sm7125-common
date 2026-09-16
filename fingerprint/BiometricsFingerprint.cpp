@@ -79,7 +79,7 @@ public:
     OplusClientCallback(sp<android::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprintClientCallback> clientCallback) : mClientCallback(clientCallback) {}
     Return<void> onEnrollResult(uint64_t deviceId, uint32_t fingerId,
         uint32_t groupId, uint32_t remaining) {
-        if (isDeviceUdfps()) {
+        if (isDeviceUdfps() && remaining == 0) {
             set(FP_PRESS_PATH, 0);
             set(DIMLAYER_PATH, 0);
         }
@@ -103,7 +103,10 @@ public:
 
     Return<void> onAuthenticated(uint64_t deviceId, uint32_t fingerId, uint32_t groupId,
         const hidl_vec<uint8_t>& token) {
-        if (isDeviceUdfps()) {
+        if (mClientCallback == nullptr) {
+            return Void();
+        }
+        if (isDeviceUdfps() && fingerId != 0) {
             set(FP_PRESS_PATH, 0);
             set(DIMLAYER_PATH, 0);
         }
@@ -112,8 +115,10 @@ public:
 
     Return<void> onError(uint64_t deviceId, vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError error, int32_t vendorCode) {
         if (isDeviceUdfps()) {
-            set(FP_PRESS_PATH, 0);
-            set(DIMLAYER_PATH, 0);
+            if (error == vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError::ERROR_CANCELED) {
+                set(FP_PRESS_PATH, 0);
+                set(DIMLAYER_PATH, 0);
+            }
         }
         return mClientCallback->onError(deviceId, OplusToAOSPFingerprintError(error), vendorCode);
     }
@@ -274,6 +279,14 @@ Return<void> BiometricsFingerprint::onFingerUp() {
     return Void();
 }
 
+/*
+ * /sys/kernel/oppo_display/power_status values:
+ * 0: OPPO_DISPLAY_POWER_OFF (Screen off / deep sleep)
+ * 1: OPPO_DISPLAY_POWER_DOZE (Doze pulse / Pickup / Raise-to-wake)
+ * 2: OPPO_DISPLAY_POWER_ON (Screen fully on)
+ * 3: OPPO_DISPLAY_POWER_DOZE_SUSPEND (Stationary AOD clock)
+ * 4: OPPO_DISPLAY_POWER_ON_UNKNOW
+ */
 Return<bool> BiometricsFingerprint::isDozeMode() {
     int status = get(POWER_STATUS_PATH, 0);
     return (status == 1) || (status == 3);
@@ -281,6 +294,11 @@ Return<bool> BiometricsFingerprint::isDozeMode() {
 
 Return<void> BiometricsFingerprint::onFingerDown(uint32_t, uint32_t, float, float) {
     if (isUdfps(0)) {
+        int status = get(POWER_STATUS_PATH, 0);
+        /* Suppress fingerprint illumination on stationary AOD (DOZE_SUSPEND = 3) or screen off (0) */
+        if (status == 0 || status == 3) {
+            return Void();
+        }
         set(DIMLAYER_PATH, 1);
         set(FP_PRESS_PATH, 1);
     }
