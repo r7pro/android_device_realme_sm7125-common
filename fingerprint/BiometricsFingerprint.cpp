@@ -28,7 +28,7 @@
 #include <thread>
 
 #define FP_PRESS_PATH "/sys/kernel/oppo_display/notify_fppress"
-#define DIMLAYER_PATH "/sys/kernel/oppo_display/dimlayer_hbm"
+#define HBM_PATH "/sys/kernel/oppo_display/hbm"
 #define POWER_STATUS_PATH "/sys/kernel/oppo_display/power_status"
 #define NOTIFY_BLANK_PATH "/sys/kernel/oppo_display/notify_panel_blank"
 #define PRJNAME_PATH "/proc/oplusVersion/prjName"
@@ -81,7 +81,7 @@ public:
         uint32_t groupId, uint32_t remaining) {
         if (isDeviceUdfps() && remaining == 0) {
             set(FP_PRESS_PATH, 0);
-            set(DIMLAYER_PATH, 0);
+            set(HBM_PATH, 0);
         }
         return mClientCallback->onEnrollResult(deviceId, fingerId, groupId, remaining);
     }
@@ -105,7 +105,7 @@ public:
         const hidl_vec<uint8_t>& token) {
         if (isDeviceUdfps() && fingerId != 0) {
             set(FP_PRESS_PATH, 0);
-            set(DIMLAYER_PATH, 0);
+            set(HBM_PATH, 0);
         }
         return mClientCallback->onAuthenticated(deviceId, fingerId, groupId, token);
     }
@@ -113,7 +113,7 @@ public:
     Return<void> onError(uint64_t deviceId, vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError error, int32_t vendorCode) {
         if (isDeviceUdfps()) {
             set(FP_PRESS_PATH, 0);
-            set(DIMLAYER_PATH, 0);
+            set(HBM_PATH, 0);
         }
         return mClientCallback->onError(deviceId, OplusToAOSPFingerprintError(error), vendorCode);
     }
@@ -228,8 +228,8 @@ Return<uint64_t> BiometricsFingerprint::getAuthenticatorId()  {
 
 Return<RequestStatus> BiometricsFingerprint::cancel()  {
     if (isUdfps(0)) {
-        set(DIMLAYER_PATH, 0);
         set(FP_PRESS_PATH, 0);
+        set(HBM_PATH, 0);
     }
     RequestStatus ret = OplusToAOSPRequestStatus(mOplusBiometricsFingerprint->cancel());
     if (ret == RequestStatus::SYS_OK) {
@@ -269,7 +269,7 @@ Return<void> BiometricsFingerprint::onShowUdfpsOverlay() {
 Return<void> BiometricsFingerprint::onFingerUp() {
     if (isUdfps(0)) {
         set(FP_PRESS_PATH, 0);
-        set(DIMLAYER_PATH, 0);
+        set(HBM_PATH, 0);
     }
     return Void();
 }
@@ -289,16 +289,16 @@ Return<bool> BiometricsFingerprint::isDozeMode() {
 
 Return<void> BiometricsFingerprint::onFingerDown(uint32_t, uint32_t, float, float) {
     if (isUdfps(0)) {
-        set(DIMLAYER_PATH, 1);
         set(FP_PRESS_PATH, 1);
+        set(HBM_PATH, 1);
     }
     return Void();
 }
 
 Return<void> BiometricsFingerprint::onHideUdfpsOverlay() {
     if (isUdfps(0)) {
-        set(DIMLAYER_PATH, 0);
         set(FP_PRESS_PATH, 0);
+        set(HBM_PATH, 0);
     }
     return Void();
 }
