@@ -169,13 +169,11 @@ function configure_memory_parameters() {
     
     # Set global VM parameters
     echo 0 > /sys/module/vmpressure/parameters/allocstall_threshold
-    # wsf was forced to 1 (laziest reclaim -> kswapd wakes late -> direct-reclaim
-    # stalls/jank). 30 is the community value for non-MGLRU LRU devices: kswapd
-    # reclaims a bit more proactively without the over-reclaim seen at 100.
-    # NOTE: this is the one knob to watch; revert to 1 if anything feels worse.
-    echo 30 > /proc/sys/vm/watermark_scale_factor
+    # wsf at 10 provides balanced reclaim without the kswapd over-reclaim/thrashing seen at higher values.
+    # extra_free_kbytes at 24300 (~95MB) provides essential watermark cushion to prevent kswapd looping.
+    echo 10 > /proc/sys/vm/watermark_scale_factor
     echo 16384 > /proc/sys/vm/min_free_kbytes
-    echo 0 > /proc/sys/vm/extra_free_kbytes
+    echo 24300 > /proc/sys/vm/extra_free_kbytes
     echo 100 > /proc/sys/vm/vfs_cache_pressure
     
     # Configure read-ahead values
