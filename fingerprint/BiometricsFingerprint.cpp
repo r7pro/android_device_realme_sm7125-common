@@ -103,8 +103,8 @@ public:
 
     Return<void> onAuthenticated(uint64_t deviceId, uint32_t fingerId, uint32_t groupId,
         const hidl_vec<uint8_t>& token) {
+        set(FP_PRESS_PATH, 0);
         if (isDeviceUdfps() && fingerId != 0) {
-            set(FP_PRESS_PATH, 0);
             set(HBM_PATH, 0);
         }
         return mClientCallback->onAuthenticated(deviceId, fingerId, groupId, token);
@@ -219,6 +219,10 @@ Return<RequestStatus> BiometricsFingerprint::enroll(const hidl_array<uint8_t, 69
 }
 
 Return<RequestStatus> BiometricsFingerprint::postEnroll()  {
+    if (isUdfps(0)) {
+        set(HBM_PATH, 0);
+        set(FP_PRESS_PATH, 0);
+    }
     return OplusToAOSPRequestStatus(mOplusBiometricsFingerprint->postEnroll());
 }
 
@@ -234,7 +238,7 @@ Return<RequestStatus> BiometricsFingerprint::cancel()  {
     RequestStatus ret = OplusToAOSPRequestStatus(mOplusBiometricsFingerprint->cancel());
     if (ret == RequestStatus::SYS_OK) {
         vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError err = vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError::ERROR_CANCELED;
-        if (!mOplusClientCallback->onError(0, err, 0).isOk()) {
+        if (mOplusClientCallback != nullptr && !mOplusClientCallback->onError(0, err, 0).isOk()) {
             ALOGE("failed to invoke fingerprint onError callback");
         }
     }
