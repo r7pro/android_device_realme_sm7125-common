@@ -178,9 +178,10 @@
     <bool name="config_powerDecoupleAutoSuspendModeFromDisplay">true</bool>
 
     <!-- Screen brightness used to dim the screen while dozing in a very low power state.
-         May be less than the minimum allowed brightness setting
-         that can be set by the user. -->
+         May be less than the minimum allowed brightness setting that can be set by the user.
+         Configured to hardware backlight 258 (interpolated DTS alpha 228 for 30.34 nits). -->
     <integer name="config_screenBrightnessDoze">17</integer>
+    <item name="config_screenBrightnessDozeFloat" format="float" type="dimen">0.062992126</item>
 
     <!-- Whether the display blanks itself when transitioning from a doze to a non-doze state -->
     <bool name="config_displayBlanksAfterDoze">false</bool>
@@ -779,8 +780,8 @@
     <bool name="config_displayWhiteBalanceEnabled">false</bool>
 
     <!-- Boolean indicating whether the HWC setColorTransform function can be performed efficiently
-         in hardware for individual layers. Qualcomm SDM applies color transform at display level. -->
-    <bool name="config_setColorTransformAcceleratedPerLayer">false</bool>
+         in hardware for individual layers. Must be true so SurfaceFlinger excludes UDFPS illumination from Night Light transform. -->
+    <bool name="config_setColorTransformAcceleratedPerLayer">true</bool>
 
     <!-- Suppress crash dialog for Google TTS -->
     <string name="config_appsNotReportingCrashes">com.google.android.tts</string>
