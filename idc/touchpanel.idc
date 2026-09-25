@@ -7,4 +7,3 @@
 touch.deviceType = touchScreen
 touch.orientationAware = 1
 touch.enableForInactiveViewport = 1
-device.wake = 1
