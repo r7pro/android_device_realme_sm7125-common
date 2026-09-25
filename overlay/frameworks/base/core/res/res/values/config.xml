@@ -138,7 +138,7 @@
 
          Refer to power.h for details.
     -->
-    <bool name="config_powerDecoupleInteractiveModeFromDisplay">false</bool>
+    <bool name="config_powerDecoupleInteractiveModeFromDisplay">true</bool>
 
     <!-- Delay that allows some content to arrive at the display before switching
          from DOZE to ON, in millis. -->
@@ -163,19 +163,16 @@
 
     <!-- Power Management: Specifies whether to decouple the auto-suspend state of the
          device from the display on/off state.
-         When false, autosuspend_disable() will be called before the display is turned on
-         and autosuspend_enable() will be called after the display is turned off.
-         This mode provides best compatibility for devices using legacy power management
-         features such as early suspend / late resume.
-         When true, autosuspend_display() and autosuspend_enable() will be called
-         independently of whether the display is being turned on or off.  This mode
-         enables the power manager to suspend the application processor while the
-         display is on.
-         This resource should be set to "true" when a doze component has been specified
-         to maximize power savings but not all devices support it.
-         Refer to autosuspend.h for details.
-    -->
-    <bool name="config_powerDecoupleAutoSuspendModeFromDisplay">true</bool>
+         RMX2170: Set to false for our ramless panel.  When true, the AP
+         attempts to autosuspend while the SDE display engine is actively
+         streaming frames for AOD, triggering continuous wakeups that drain
+         50-100mA constantly.  Tying it to display state allows clean power
+         collapse during screen-off and steady AOD operation. -->
+    <bool name="config_powerDecoupleAutoSuspendModeFromDisplay">false</bool>
+
+    <!-- Indicate whether to allow the device to suspend when the screen is off
+         due to the proximity sensor. -->
+    <bool name="config_suspendWhenScreenOffDueToProximity">true</bool>
 
     <!-- Screen brightness used to dim the screen while dozing in a very low power state.
          May be less than the minimum allowed brightness setting
@@ -191,6 +188,14 @@
     <!-- Control whether the always on display mode is enabled by default. This value will be used
          during initialization when the setting is still null. -->
     <bool name="config_dozeAlwaysOnEnabled">false</bool>    
+    
+    <!-- Type of the udfps long press sensor. Empty if long press is not supported.
+         RMX2170: Set to empty because our device does not have a virtual
+         org.lineageos.sensor.udfps sensor.  When this was set to a sensor name,
+         LineageOS SystemUI exclusively waited for that sensor to fire before
+         showing the UDFPS pressed icon in AOD — since the sensor doesn't exist,
+         the pressed icon was never triggered. -->
+    <string name="config_dozeUdfpsLongPressSensorType" translatable="false"></string>
     
     <!-- If true, the display will be shifted around in ambient mode. -->
     <bool name="config_enableBurnInProtection">true</bool>
@@ -706,6 +711,31 @@
 
     <!-- Whether device has VOOC charging support -->
     <bool name="config_hasVoocCharger">true</bool>
+
+    <!-- Whether device has SuperDart charging support -->
+    <bool name="config_hasSuperdartCharger">true</bool>
+
+    <!-- Night display color temperature calibration -->
+    <string-array name="config_nightDisplayColorTemperatureCoefficients">
+        <!-- R a-coefficient --> <item>0.0</item>
+        <!-- R b-coefficient --> <item>0.0</item>
+        <!-- R y-intercept --> <item>1.0</item>
+        <!-- G a-coefficient --> <item>-0.000000014365268757</item>
+        <!-- G b-coefficient --> <item>0.000255092801250106</item>
+        <!-- G y-intercept --> <item>-0.064156942434907716</item>
+        <!-- B a-coefficient --> <item>-0.000000000910931179</item>
+        <!-- B b-coefficient --> <item>0.000207598323269139</item>
+        <!-- B y-intercept --> <item>-0.349361641294833436</item>
+    </string-array>
+
+    <!-- Maximum color temperature, in Kelvin, supported by Night display. -->
+    <integer name="config_nightDisplayColorTemperatureMax">6500</integer>
+
+    <!-- Whether to cancel fingerprint operation if not idle -->
+    <bool name="config_fpCancelIfNotIdle">true</bool>
+
+    <!-- Full screen aspect ratio -->
+    <item name="config_screenAspectRatio" format="float" type="dimen">2.222</item>
      
     <!-- The default refresh rate for a given device. Change this value to set a higher default
          refresh rate. If the hardware composer on the device supports display modes with a higher

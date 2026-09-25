@@ -20,12 +20,17 @@
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds. -->
 <resources>
-    <!-- Doze: does this device support STATE_DOZE?  -->
-    <bool name="doze_display_state_supported">false</bool>
-    <bool name="doze_suspend_display_state_supported">false</bool>
+    <!-- Doze: does this device support STATE_DOZE?
+         RMX2170: Our ramless AMOLED panel uses video-to-cmd POMS for AOD.
+         The SDE/display engine remains active in both LP1 and LP2, so both
+         doze states are valid for rendering the UDFPS overlay.  Without
+         these flags set to true, UdfpsController in SystemUI will refuse to
+         show the fingerprint press icon in AOD (LP1/LP2). -->
+    <bool name="doze_display_state_supported">true</bool>
+    <bool name="doze_suspend_display_state_supported">true</bool>
 
     <!-- Whether usage of the proximity sensor during doze is supported -->
-    <bool name="doze_proximity_sensor_supported">false</bool>
+    <bool name="doze_proximity_sensor_supported">true</bool>
     
     <!-- Charging info current divider, if needed -->
     <integer name="config_currentInfoDivider" translatable="false">1</integer>
@@ -41,4 +46,19 @@
 
     <!-- Indicates whether the blurred wallpaper is supported -->
     <bool name="config_supportBlurredWallpaper">true</bool>
+
+    <!-- Vibration on icon animation -->
+    <bool name="config_vibrateOnIconAnimation">true</bool>
+
+    <!-- StatusBar burn-in protection -->
+    <bool name="config_statusBarBurnInProtection">true</bool>
+
+    <!-- The battery current divider -->
+    <integer name="config_battCurrentDivider" translatable="false">1</integer>
+    
+    <!-- The maximum count of notifications on Keyguard (only when ambient play indication is showing on keyguard).
+         The rest will be collapsed in an overflow card.
+     -->
+    <integer name="keyguard_max_notification_count_ambient_play">2</integer>
+
 </resources>
