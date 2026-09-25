@@ -3,6 +3,7 @@ ro.charger.enable_suspend=true
 
 # Display
 debug.sf.latch_unsignaled=1
+debug.sf.predict_hwc_composition_strategy=0
 vendor.display.disable_excl_rect_partial_fb=1
 debug.sf.disable_client_composition_cache=1
 vendor.display.disable_rotator_ubwc=1

@@ -77,9 +77,19 @@ WITH_DEXPREOPT_DEBUG_INFO := false
 TARGET_SCREEN_DENSITY := 440
 TARGET_USES_HWC2 := true
 TARGET_USES_DRM_PP := true
+TARGET_USES_FOD_ZPOS := true
+ifeq ($(TARGET_USES_FOD_ZPOS),true)
+$(call soong_config_set,qtidisplay,udfps,true)
+endif
+ifeq ($(TARGET_USES_DRM_PP),true)
+$(call soong_config_set,qtidisplay,drmpp,true)
+endif
 BOARD_USES_ADRENO := true
 TARGET_HAS_HDR_DISPLAY := true
 TARGET_HAS_WIDE_COLOR_DISPLAY := true
+ifeq ($(TARGET_HAS_WIDE_COLOR_DISPLAY),true)
+$(call soong_config_set,qtidisplay,wide_color,true)
+endif
 
 # Disable sparse on all filesystem images
 TARGET_USERIMAGES_SPARSE_EROFS_DISABLED := true
@@ -242,7 +252,7 @@ SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/private
 BOARD_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor
 
 # SurfaceFlinger
-TARGET_USE_AOSP_SURFACEFLINGER := true
+#TARGET_USE_AOSP_SURFACEFLINGER := true
 
 # WiFi
 BOARD_WLAN_DEVICE := qcwcn

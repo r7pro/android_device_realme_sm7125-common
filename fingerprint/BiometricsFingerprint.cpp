@@ -70,6 +70,18 @@ static bool isDeviceUdfps() {
     return is_udfps;
 }
 
+bool BiometricsFingerprint::setDimlayerHbm(unsigned int value) {
+    if (!isDeviceUdfps()) return false;
+    set(DIMLAYER_PATH, value);
+    return true;
+}
+
+bool BiometricsFingerprint::setFpPress(unsigned int value) {
+    if (!isDeviceUdfps()) return false;
+    set(FP_PRESS_PATH, value);
+    return true;
+}
+
 BiometricsFingerprint::BiometricsFingerprint() {
     mOplusBiometricsFingerprint = vendor::oplus::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprint::getService();
 }
@@ -79,9 +91,9 @@ public:
     OplusClientCallback(sp<android::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprintClientCallback> clientCallback) : mClientCallback(clientCallback) {}
     Return<void> onEnrollResult(uint64_t deviceId, uint32_t fingerId,
         uint32_t groupId, uint32_t remaining) {
-        if (isDeviceUdfps() && remaining == 0) {
-            set(FP_PRESS_PATH, 0);
-            set(DIMLAYER_PATH, 0);
+        if (remaining == 0) {
+            BiometricsFingerprint::setFpPress(0);
+            BiometricsFingerprint::setDimlayerHbm(0);
         }
         return mClientCallback->onEnrollResult(deviceId, fingerId, groupId, remaining);
     }
@@ -103,18 +115,16 @@ public:
 
     Return<void> onAuthenticated(uint64_t deviceId, uint32_t fingerId, uint32_t groupId,
         const hidl_vec<uint8_t>& token) {
-        if (isDeviceUdfps() && fingerId != 0) {
-            set(FP_PRESS_PATH, 0);
-            set(DIMLAYER_PATH, 0);
+        BiometricsFingerprint::setFpPress(0);
+        if (fingerId != 0) {
+            BiometricsFingerprint::setDimlayerHbm(0);
         }
         return mClientCallback->onAuthenticated(deviceId, fingerId, groupId, token);
     }
 
     Return<void> onError(uint64_t deviceId, vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError error, int32_t vendorCode) {
-        if (isDeviceUdfps()) {
-            set(FP_PRESS_PATH, 0);
-            set(DIMLAYER_PATH, 0);
-        }
+        BiometricsFingerprint::setFpPress(0);
+        BiometricsFingerprint::setDimlayerHbm(0);
         return mClientCallback->onError(deviceId, OplusToAOSPFingerprintError(error), vendorCode);
     }
 
@@ -219,6 +229,8 @@ Return<RequestStatus> BiometricsFingerprint::enroll(const hidl_array<uint8_t, 69
 }
 
 Return<RequestStatus> BiometricsFingerprint::postEnroll()  {
+    setFpPress(0);
+    setDimlayerHbm(0);
     return OplusToAOSPRequestStatus(mOplusBiometricsFingerprint->postEnroll());
 }
 
@@ -227,14 +239,12 @@ Return<uint64_t> BiometricsFingerprint::getAuthenticatorId()  {
 }
 
 Return<RequestStatus> BiometricsFingerprint::cancel()  {
-    if (isUdfps(0)) {
-        set(DIMLAYER_PATH, 0);
-        set(FP_PRESS_PATH, 0);
-    }
+    setFpPress(0);
+    setDimlayerHbm(0);
     RequestStatus ret = OplusToAOSPRequestStatus(mOplusBiometricsFingerprint->cancel());
     if (ret == RequestStatus::SYS_OK) {
         vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError err = vendor::oplus::hardware::biometrics::fingerprint::V2_1::FingerprintError::ERROR_CANCELED;
-        if (!mOplusClientCallback->onError(0, err, 0).isOk()) {
+        if (mOplusClientCallback != nullptr && !mOplusClientCallback->onError(0, err, 0).isOk()) {
             ALOGE("failed to invoke fingerprint onError callback");
         }
     }
@@ -267,10 +277,8 @@ Return<void> BiometricsFingerprint::onShowUdfpsOverlay() {
 }
 
 Return<void> BiometricsFingerprint::onFingerUp() {
-    if (isUdfps(0)) {
-        set(FP_PRESS_PATH, 0);
-        set(DIMLAYER_PATH, 0);
-    }
+    setFpPress(0);
+    setDimlayerHbm(0);
     return Void();
 }
 
@@ -287,19 +295,15 @@ Return<bool> BiometricsFingerprint::isDozeMode() {
     return (status == 1) || (status == 3);
 }
 
-Return<void> BiometricsFingerprint::onFingerDown(uint32_t, uint32_t, float, float) {
-    if (isUdfps(0)) {
-        set(DIMLAYER_PATH, 1);
-        set(FP_PRESS_PATH, 1);
-    }
+Return<void> BiometricsFingerprint::onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
+    setDimlayerHbm(1);
+    setFpPress(1);
     return Void();
 }
 
 Return<void> BiometricsFingerprint::onHideUdfpsOverlay() {
-    if (isUdfps(0)) {
-        set(DIMLAYER_PATH, 0);
-        set(FP_PRESS_PATH, 0);
-    }
+    setFpPress(0);
+    setDimlayerHbm(0);
     return Void();
 }
 
