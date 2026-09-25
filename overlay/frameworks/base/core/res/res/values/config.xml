@@ -43,6 +43,10 @@
         <item>ethernet,9,9,9,-1,true</item>
     </string-array>
 
+    <!-- Wi-Fi supplicant scan interval in seconds when device is connected/idle to save standby power -->
+    <integer name="config_wifi_supplicant_scan_interval">300</integer>
+    <integer name="config_wifi_framework_scan_interval_ms">300000</integer>
+
     <!-- Configure mobile tcp buffer sizes in the form:
          rat-name:rmem_min,rmem_def,rmem_max,wmem_min,wmem_def,wmem_max
          If no value is found for the rat-name in use, the system default will be applied.
