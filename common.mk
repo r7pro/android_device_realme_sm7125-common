@@ -283,9 +283,16 @@ PRODUCT_PACKAGES += \
     ipacm \
     IPACM_cfg.xml
 
-# Keylayout
+# Keylayout & IDC
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/keylayout/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl
+    $(LOCAL_PATH)/keylayout/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
+    $(LOCAL_PATH)/keylayout/qpnp_pon.kl:system/usr/keylayout/qpnp_pon.kl \
+    $(LOCAL_PATH)/keylayout/touchpanel.kl:system/usr/keylayout/touchpanel.kl \
+    $(LOCAL_PATH)/keylayout/touchpanel.kl:system/usr/keylayout/qwerty.kl \
+    $(LOCAL_PATH)/idc/touchpanel.idc:system/usr/idc/touchpanel.idc \
+    $(LOCAL_PATH)/idc/qpnp_pon.idc:system/usr/idc/qpnp_pon.idc \
+    $(LOCAL_PATH)/idc/qwerty.idc:system/usr/idc/qwerty.idc
+
 
 # Lights
 PRODUCT_PACKAGES += \
