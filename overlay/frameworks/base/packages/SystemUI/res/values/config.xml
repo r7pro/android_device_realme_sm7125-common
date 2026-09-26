@@ -20,12 +20,13 @@
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds. -->
 <resources>
-    <!-- Doze: does this device support STATE_DOZE?
+    <!-- Doze: does this device support STATE_DOZE / STATE_DOZE_SUSPEND?
          RMX2170: Our ramless AMOLED panel uses video-to-cmd POMS for AOD.
-         The SDE/display engine remains active in both LP1 and LP2, so both
-         doze states are valid for rendering the UDFPS overlay.  Without
-         these flags set to true, UdfpsController in SystemUI will refuse to
-         show the fingerprint press icon in AOD (LP1/LP2). -->
+         - Both false: Display stays in STATE_ON (power_status = 2) during AOD
+         - doze_display_state_supported=true, suspend=false: Display enters STATE_DOZE (LP1, power_status = 1)
+         - Both true: Display enters STATE_DOZE (power_status = 1) while updating,
+           and suspends into STATE_DOZE_SUSPEND (LP2, power_status = 3) when idle.
+         UDFPS overlay rendering works in both LP1 and LP2. -->
     <bool name="doze_display_state_supported">true</bool>
     <bool name="doze_suspend_display_state_supported">true</bool>
 
