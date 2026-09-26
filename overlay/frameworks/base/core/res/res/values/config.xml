@@ -155,7 +155,7 @@
     <string name="config_dozeComponent">com.android.systemui/com.android.systemui.doze.DozeService</string>
 
     <!-- Doze: should the TYPE_PICK_UP_GESTURE sensor be used as a pulse signal. -->
-    <bool name="config_dozePulsePickup">true</bool>
+    <bool name="config_dozePulsePickup">false</bool>
 
     <!-- If true, the doze component is not started until after the screen has been
          turned off and the screen off animation has been performed. -->
@@ -163,12 +163,13 @@
 
     <!-- Power Management: Specifies whether to decouple the auto-suspend state of the
          device from the display on/off state.
-         RMX2170: Set to false for our ramless panel.  When true, the AP
-         attempts to autosuspend while the SDE display engine is actively
-         streaming frames for AOD, triggering continuous wakeups that drain
-         50-100mA constantly.  Tying it to display state allows clean power
-         collapse during screen-off and steady AOD operation. -->
-    <bool name="config_powerDecoupleAutoSuspendModeFromDisplay">false</bool>
+         When true, allows the application processor to enter system sleep while the
+         display is in doze mode and idle power collapse is active, dramatically
+         reducing AOD power drain. -->
+    <bool name="config_powerDecoupleAutoSuspendModeFromDisplay">true</bool>
+
+    <!-- Default screen refresh rate in doze mode -->
+    <integer name="config_dozeDefaultRefreshRate">30</integer>
 
     <!-- Indicate whether to allow the device to suspend when the screen is off
          due to the proximity sensor. -->
