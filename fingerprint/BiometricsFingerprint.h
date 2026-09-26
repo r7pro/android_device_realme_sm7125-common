@@ -68,9 +68,6 @@ public:
     Return<void> onShowUdfpsOverlay();
     Return<void> onHideUdfpsOverlay();
 
-    static bool setDimlayerHbm(unsigned int value);
-    static bool setFpPress(unsigned int value);
-
 private:
     sp<vendor::oplus::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprint> mOplusBiometricsFingerprint;
     sp<vendor::oplus::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprintClientCallback> mOplusClientCallback;
