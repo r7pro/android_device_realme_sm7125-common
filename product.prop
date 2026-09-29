@@ -61,3 +61,13 @@ persist.bluetooth.sbc_hd_higher_bitrate=1
 
 # Media prefetch
 persist.mm.enable.prefetch=true
+
+# Phantom process monitoring
+sys.fflag.override.settings_enable_monitor_phantom_procs=false
+
+# RIL
+persist.vendor.qti.telephony.vt_cam_interface=2
+persist.vendor.radio.report_codec=1
+
+# Shutdown
+ro.build.shutdown_timeout=2
