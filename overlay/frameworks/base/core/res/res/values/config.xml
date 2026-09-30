@@ -186,7 +186,7 @@
     <integer name="config_screenBrightnessDoze">17</integer>
 
     <!-- Whether the display blanks itself when transitioning from a doze to a non-doze state -->
-    <bool name="config_displayBlanksAfterDoze">false</bool>
+    <bool name="config_displayBlanksAfterDoze">true</bool>
 
     <!-- Enable doze alwaysOn Display -->
     <bool name="config_dozeAlwaysOnDisplayAvailable">true</bool>
@@ -269,32 +269,20 @@
          Must be overridden in platform specific overlays -->
     <integer-array name="config_autoBrightnessLevels">
         <item>45</item>
-        <item>300</item>
-        <item>700</item>
         <item>1025</item>
         <item>1480</item>
-        <item>1850</item>
         <item>2250</item>
-        <item>2700</item>
         <item>3300</item>
-        <item>6650</item>
         <item>10000</item>
-        <item>11000</item>
         <item>12000</item>
     </integer-array>
     <integer-array name="config_autoBrightnessLuxMaxLimit">
         <item>5</item>
-        <item>50</item>
-        <item>100</item>
         <item>150</item>
         <item>1150</item>
-        <item>1550</item>
         <item>1900</item>
-        <item>2500</item>
         <item>2800</item>
-        <item>3400</item>
         <item>4000</item>
-        <item>60000</item>
         <item>80000</item>
         <item>85000</item>
     </integer-array>
@@ -305,19 +293,13 @@
          The brightness values must be between 0 and 255 and be non-decreasing.
          This must be overridden in platform specific overlays -->
     <integer-array name="config_autoBrightnessLcdBacklightValues">
-        <item>11</item>
-        <item>17</item>
-        <item>23</item>
-        <item>28</item>
-        <item>56</item>
-        <item>72</item>
-        <item>90</item>
-        <item>112</item>
-        <item>143</item>
-        <item>167</item>
-        <item>187</item>
-        <item>223</item>
-        <item>241</item>
+        <item>8</item>
+        <item>22</item>
+        <item>48</item>
+        <item>78</item>
+        <item>128</item>
+        <item>169</item>
+        <item>206</item>
         <item>255</item>
     </integer-array>
 
@@ -519,9 +501,6 @@
          auto-brightness adjustment setting. -->
     <fraction name="config_autoBrightnessAdjustmentMaxGamma">300%</fraction>
 
-    <!-- How long user adjustments persist (in milliseconds) before expiring when display policy is non-interactive. -->
-    <integer name="config_autoBrightnessShortTermModelTimeout">2000</integer>
-
     <!-- Stability requirements in milliseconds for accepting a new brightness level.  This is used
          for debouncing the light sensor.  Different constants are used to debounce the light sensor
          when adapting to brighter or darker environments.  This parameter controls how quickly
@@ -552,8 +531,8 @@
 
     <!-- Default screen brightness setting
          Must be in the range specified by minimum and maximum.
-         Equivalent to 55/255 (default for this device)    -->
-    <integer name="config_screenBrightnessSettingDefault">55</integer>
+         Equivalent to 67/255 (default for this device)    -->
+    <integer name="config_screenBrightnessSettingDefault">45</integer>
 
     <!-- Vibrator pattern for feedback about a long screen/key press -->
     <integer-array name="config_longPressVibePattern">
