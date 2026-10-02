@@ -109,7 +109,7 @@ public final class DozeUtils {
                 DOZE_ALWAYS_ON, enable ? 1 : 0, UserHandle.USER_CURRENT);
     }
 
-    protected static boolean isAlwaysOnEnabled(Context context) {
+    public static boolean isAlwaysOnEnabled(Context context) {
         final boolean enabledByDefault = context.getResources()
                 .getBoolean(com.android.internal.R.bool.config_dozeAlwaysOnEnabled);
 
@@ -118,7 +118,7 @@ public final class DozeUtils {
                 UserHandle.USER_CURRENT) != 0;
     }
 
-    protected static boolean alwaysOnDisplayAvailable(Context context) {
+    public static boolean alwaysOnDisplayAvailable(Context context) {
         return new AmbientDisplayConfiguration(context).alwaysOnAvailable();
     }
 

@@ -66,7 +66,6 @@ TARGET_BOOTLOADER_BOARD_NAME := atoll
 
 # Camera
 #TARGET_USES_QTI_CAMERA_DEVICE := true
-BOARD_LOW_LATENCY_CAPTURE_DURATION := 20
 
 # ART
 WITH_DEXPREOPT := true
@@ -81,15 +80,9 @@ TARGET_USES_FOD_ZPOS := true
 ifeq ($(TARGET_USES_FOD_ZPOS),true)
 $(call soong_config_set,qtidisplay,udfps,true)
 endif
-ifeq ($(TARGET_USES_DRM_PP),true)
-$(call soong_config_set,qtidisplay,drmpp,true)
-endif
 BOARD_USES_ADRENO := true
 TARGET_HAS_HDR_DISPLAY := true
 TARGET_HAS_WIDE_COLOR_DISPLAY := true
-ifeq ($(TARGET_HAS_WIDE_COLOR_DISPLAY),true)
-$(call soong_config_set,qtidisplay,wide_color,true)
-endif
 
 # Disable sparse on all filesystem images
 TARGET_USERIMAGES_SPARSE_EROFS_DISABLED := true
@@ -120,7 +113,6 @@ ODM_MANIFEST_SKUS := nfc
 ODM_MANIFEST_NFC_FILES := $(COMMON_PATH)/manifest_nfc.xml
 
 # HWUI
-TARGET_USES_VULKAN := true
 HWUI_COMPILE_FOR_PERF := true
 
 # Kernel

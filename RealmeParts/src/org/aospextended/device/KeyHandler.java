@@ -62,6 +62,8 @@ public class KeyHandler implements DeviceKeyHandler {
     private static final int GESTURE_WAKELOCK_DURATION = 2000;
 
     private static final int GESTURE_DOUBLE_TAP_SCANCODE = 248;
+    private static final int GESTURE_FP_DOWN_SCANCODE = 260;
+    private static final int GESTURE_FP_UP_SCANCODE = 261;
     private static final int GESTURE_W_SCANCODE = 246;
     private static final int GESTURE_M_SCANCODE = 247;
     private static final int GESTURE_CIRCLE_SCANCODE = 249;
@@ -125,6 +127,19 @@ public class KeyHandler implements DeviceKeyHandler {
                         doHapticFeedback();
                     }
                 }
+                break;
+            case GESTURE_FP_DOWN_SCANCODE:
+                if (DozeUtils.isAlwaysOnEnabled(mContext)) {
+                    action = null;
+                } else {
+                    action = null;
+                    Context pulseContext = (mAppContext != null) ? mAppContext : mContext;
+                    DozeUtils.launchDozePulse(pulseContext);
+                    doHapticFeedback();
+                }
+                break;
+            case GESTURE_FP_UP_SCANCODE:
+                action = null;
                 break;
             case GESTURE_W_SCANCODE:
                 action = mPref.getString(TouchGestures.PREF_GESTURE_W,
@@ -212,6 +227,8 @@ public class KeyHandler implements DeviceKeyHandler {
 
     private boolean isGestureScanCode(int scanCode) {
         return scanCode == GESTURE_DOUBLE_TAP_SCANCODE
+                || scanCode == GESTURE_FP_DOWN_SCANCODE
+                || scanCode == GESTURE_FP_UP_SCANCODE
                 || scanCode == GESTURE_W_SCANCODE
                 || scanCode == GESTURE_M_SCANCODE
                 || scanCode == GESTURE_CIRCLE_SCANCODE

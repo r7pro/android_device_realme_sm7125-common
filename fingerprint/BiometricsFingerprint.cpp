@@ -121,6 +121,10 @@ public:
 
     Return<void> onAuthenticated(uint64_t deviceId, uint32_t fingerId, uint32_t groupId,
         const hidl_vec<uint8_t>& token) {
+        if (fingerId != 0) {
+            BiometricsFingerprint::setDimlayerHbm(0);
+        }
+        BiometricsFingerprint::setFpPress(0);
         return mClientCallback->onAuthenticated(deviceId, fingerId, groupId, token);
     }
 

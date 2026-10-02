@@ -3,14 +3,7 @@ ro.charger.enable_suspend=true
 
 # Display
 debug.sf.latch_unsignaled=1
-debug.sf.predict_hwc_composition_strategy=0
-vendor.display.disable_excl_rect_partial_fb=1
 debug.sf.disable_client_composition_cache=1
-vendor.display.disable_rotator_ubwc=1
-vendor.display.disable_layer_stitch=0
-vendor.display.disable_rotator_downscale=1
-vendor.display.idle_time=80
-vendor.display.idle_time_inactive=80
 
 # LMKD
 ro.config.low_ram=false
@@ -65,10 +58,6 @@ persist.mm.enable.prefetch=true
 
 # Phantom process monitoring
 sys.fflag.override.settings_enable_monitor_phantom_procs=false
-
-# RIL
-persist.vendor.qti.telephony.vt_cam_interface=2
-persist.vendor.radio.report_codec=1
 
 # Shutdown
 ro.build.shutdown_timeout=2
