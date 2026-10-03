@@ -5,5 +5,5 @@
 #
 
 key 248   WAKEUP            WAKE
-key 260   WAKEUP            WAKE
-key 261   WAKEUP
+key 260   BUTTON_4          WAKE
+key 261   BUTTON_5

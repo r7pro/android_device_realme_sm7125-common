@@ -128,19 +128,6 @@ public class KeyHandler implements DeviceKeyHandler {
                     }
                 }
                 break;
-            case GESTURE_FP_DOWN_SCANCODE:
-                if (DozeUtils.isAlwaysOnEnabled(mContext)) {
-                    action = null;
-                } else {
-                    action = null;
-                    Context pulseContext = (mAppContext != null) ? mAppContext : mContext;
-                    DozeUtils.launchDozePulse(pulseContext);
-                    doHapticFeedback();
-                }
-                break;
-            case GESTURE_FP_UP_SCANCODE:
-                action = null;
-                break;
             case GESTURE_W_SCANCODE:
                 action = mPref.getString(TouchGestures.PREF_GESTURE_W,
                         Action.ACTION_CAMERA);
@@ -213,6 +200,14 @@ public class KeyHandler implements DeviceKeyHandler {
 
     public KeyEvent handleKeyEvent(KeyEvent event) {
         int scanCode = event.getScanCode();
+        // UDFPS is driven directly by the fingerprint HAL and SystemUI. Do not
+        // send its touchpanel gesture through the generic gesture handler:
+        // a pulse here wakes AOD, delays the UDFPS overlay, and vibrates when
+        // the panel is fully off.
+        if (scanCode == GESTURE_FP_DOWN_SCANCODE
+                || scanCode == GESTURE_FP_UP_SCANCODE) {
+            return null;
+        }
         if (!isGestureScanCode(scanCode)) {
             return event;
         }
@@ -227,8 +222,6 @@ public class KeyHandler implements DeviceKeyHandler {
 
     private boolean isGestureScanCode(int scanCode) {
         return scanCode == GESTURE_DOUBLE_TAP_SCANCODE
-                || scanCode == GESTURE_FP_DOWN_SCANCODE
-                || scanCode == GESTURE_FP_UP_SCANCODE
                 || scanCode == GESTURE_W_SCANCODE
                 || scanCode == GESTURE_M_SCANCODE
                 || scanCode == GESTURE_CIRCLE_SCANCODE
