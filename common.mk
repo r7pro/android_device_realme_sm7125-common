@@ -282,10 +282,11 @@ PRODUCT_PACKAGES += \
     ipacm \
     IPACM_cfg.xml
 
-# Keylayout
+# Keylayout & IDC
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/keylayout/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
-    $(LOCAL_PATH)/keylayout/touchpanel.kl:system/usr/keylayout/touchpanel.kl
+    $(LOCAL_PATH)/keylayout/touchpanel.kl:system/usr/keylayout/touchpanel.kl \
+    $(LOCAL_PATH)/idc/touchpanel.idc:system/usr/idc/touchpanel.idc \
 
 
 # Lights
@@ -296,10 +297,14 @@ PRODUCT_PACKAGES += \
 $(call inherit-product-if-exists, vendor/lawnchair/lawnchair.mk)
 
 #LiveDisplay
-PRODUCT_PACKAGES += \
-    vendor.lineage.livedisplay-service.sdm
 
-$(call soong_config_set_bool,livedisplay_sdm,enable_dm,false)
+# LiveDisplay is unsupported by hardware display engine on sm7125;
+# enabling vendor.lineage.livedisplay-service.sdm causes IPictureAdjustment.getHueRange()
+# to throw UnsupportedOperationException, fatally crashing system_server during boot.
+# PRODUCT_PACKAGES += \
+#     vendor.lineage.livedisplay-service.sdm
+
+# $(call soong_config_set_bool,livedisplay_sdm,enable_dm,false)
 
 # Logging
 SPAMMY_LOG_TAGS := \

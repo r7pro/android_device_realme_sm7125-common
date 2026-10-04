@@ -81,15 +81,9 @@ TARGET_USES_FOD_ZPOS := true
 ifeq ($(TARGET_USES_FOD_ZPOS),true)
 $(call soong_config_set,qtidisplay,udfps,true)
 endif
-ifeq ($(TARGET_USES_DRM_PP),true)
-$(call soong_config_set,qtidisplay,drmpp,true)
-endif
 BOARD_USES_ADRENO := true
 TARGET_HAS_HDR_DISPLAY := true
 TARGET_HAS_WIDE_COLOR_DISPLAY := true
-ifeq ($(TARGET_HAS_WIDE_COLOR_DISPLAY),true)
-$(call soong_config_set,qtidisplay,wide_color,true)
-endif
 
 # Disable sparse on all filesystem images
 TARGET_USERIMAGES_SPARSE_EROFS_DISABLED := true
