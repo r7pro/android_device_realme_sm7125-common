@@ -76,9 +76,10 @@ function configure_memory_parameters() {
     # on SD720G). Helps the genuine memory-pressure path; the screen-on cached-app
     # kill is a separate frameworks/base issue (PhoneWindowManager).
     echo zstd > /sys/block/zram0/comp_algorithm
-    echo 100 > /proc/sys/vm/swappiness
-    echo 60 > /proc/sys/vm/direct_swappiness
+    echo 60 > /proc/sys/vm/swappiness
+    echo 0 > /proc/sys/vm/direct_swappiness
     echo 0 > /proc/sys/vm/page-cluster
+    echo 16384 > /proc/sys/vm/min_free_kbytes
     
     if [ -f /sys/block/zram0/disksize ]; then
         # Enable deduplication if available
@@ -229,7 +230,7 @@ echo 0 > /proc/sys/kernel/sched_conservative_pl
 # Input boost: also wake the big cluster (cpu6) on touch, not just little (cpu0). 1267200
 # is the big-cluster hispeed OPP -> snappier app launch / touch without slamming to 2.3GHz max.
 echo "0:1248000 6:1267200" > /sys/module/cpu_boost/parameters/input_boost_freq
-echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
+echo 60 > /sys/module/cpu_boost/parameters/input_boost_ms
 
 # Set Memory parameters
 configure_memory_parameters

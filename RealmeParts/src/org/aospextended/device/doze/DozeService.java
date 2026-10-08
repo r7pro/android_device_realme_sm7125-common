@@ -85,6 +85,9 @@ public class DozeService extends Service {
 
     private void onDisplayOff() {
         if (DEBUG) Log.d(TAG, "Display off");
+        if (DozeUtils.isAlwaysOnEnabled(this)) {
+            return;
+        }
         if (DozeUtils.isPickUpEnabled(this)) {
             mAmdSensor.enable();
         }
