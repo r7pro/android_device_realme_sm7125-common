@@ -19,9 +19,6 @@ $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 # Add common definitions for Qualcomm
 $(call inherit-product, hardware/qcom-caf/common/common.mk)
 
-# UDFPS
-$(call soong_config_set,surfaceflinger,udfps_lib,//$(LOCAL_PATH):libudfps_extension.realme_sm7125)
-
 # speaker layout channel mask
 $(call soong_config_set_bool,android_hardware_audio,skip_speaker_layout_channel_mask_field,true)
 
@@ -30,12 +27,20 @@ PRODUCT_USE_DYNAMIC_PARTITIONS := true
 PRODUCT_BOARD_PLATFORM := atoll
 PRODUCT_USES_QCOM_HARDWARE := true
 
+# Remove unwanted packages
+PRODUCT_PACKAGES += \
+    RemovePackages
+
 # AID/fs configs
 PRODUCT_PACKAGES += \
     fs_config_files
 
 # API
 PRODUCT_SHIPPING_API_LEVEL := 29
+
+# 4.14 kernel predates CC_IS_CLANG/LD_IS_LLD/AS_IS_LLVM Kconfig symbols, so it
+# cannot satisfy FCM kernel-requirement config checks at higher matrix levels.
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
 
 # Audio
 PRODUCT_PACKAGES += \
@@ -99,9 +104,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.camera.full.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.full.xml \
     frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml
 
-#CertifiedProps
-$(call inherit-product-if-exists, vendor/certprops/Android.mk)
-
 PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,$(LOCAL_PATH)/camera/,$(TARGET_COPY_OUT_ODM)/etc/camera) 
 
@@ -148,9 +150,13 @@ PRODUCT_PACKAGES += \
     android.hardware.drm@1.3.vendor \
     android.hardware.drm@1.4.vendor
 
-# Dolby
-$(call inherit-product, hardware/dolby/dolby.mk)
-
+# Audio mods (enable any subset via flags, e.g. WITH_AUDIO_DOLBY and WITH_AUDIO_VIPER)
+ifeq ($(WITH_AUDIO_VIPER),true)
+PRODUCT_PACKAGES += ViPER4AndroidFX
+endif
+ifeq ($(WITH_AUDIO_DOLBY),true)
+$(call inherit-product-if-exists, hardware/dolby/dolby.mk)
+endif
 # Enable project quotas and casefolding for emulated storage without sdcardfs
 $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 
@@ -168,6 +174,8 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.fingerprint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.fingerprint.xml
+
+$(call soong_config_set,surfaceflinger,udfps_lib,//device/realme/sm7125-common/fingerprint:libudfps_extension.realme_sm7125)
 
 # Fingerprint shims
 PRODUCT_PACKAGES += \
@@ -285,10 +293,29 @@ PRODUCT_PACKAGES += \
 $(call inherit-product-if-exists, vendor/lawnchair/lawnchair.mk)
 
 #LiveDisplay
-PRODUCT_PACKAGES += \
-    vendor.lineage.livedisplay-service.sdm
 
-$(call soong_config_set,livedisplay_sdm,enable_dm_bool,false)
+# LiveDisplay is unsupported by hardware display engine on sm7125;
+# enabling vendor.lineage.livedisplay-service.sdm causes IPictureAdjustment.getHueRange()
+# to throw UnsupportedOperationException, fatally crashing system_server during boot.
+# PRODUCT_PACKAGES += \
+#     vendor.lineage.livedisplay-service.sdm
+
+# $(call soong_config_set_bool,livedisplay_sdm,enable_dm,false)
+
+# Logging
+SPAMMY_LOG_TAGS := \
+    SDM \
+    SDM-histogram \
+    SRE \
+    WifiHAL \
+    cnss-daemon \
+    sensors \
+    vendor.qti.hardware.display.composer-service
+
+ifneq ($(TARGET_BUILD_VARIANT),eng)
+PRODUCT_VENDOR_PROPERTIES += \
+    $(foreach tag,$(SPAMMY_LOG_TAGS),log.tag.$(tag)=E)
+endif
 
 # Media
 PRODUCT_PACKAGES += \
@@ -313,12 +340,6 @@ PRODUCT_PACKAGES += \
     libavservices_minijail \
     libavservices_minijail.vendor
 
-#mount 
-PRODUCT_PACKAGES += \
-     vendor_bt_firmware_mountpoint \
-     vendor_dsp_mountpoint \
-     vendor_firmware_mnt_mountpoint
-
 # Network
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml \
@@ -336,10 +357,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/nfc/libese-nxp.conf:$(TARGET_COPY_OUT_VENDOR)/etc/libese-nxp.conf \
     $(LOCAL_PATH)/configs/nfc/nfc_features.xml:$(TARGET_COPY_OUT_ODM)/etc/permissions/sku_nfc/nfc_features.xml
 
-#NotchBar Killer
-PRODUCT_PACKAGES += \
-    NotchBarKiller \
-    NoCutoutOverlay
 
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += \
@@ -350,12 +367,6 @@ DEVICE_PACKAGE_OVERLAYS += \
 PRODUCT_PACKAGES += \
     vendor.qti.hardware.perf@2.2.vendor
 
-#Product Properties (CAF)
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.soc.manufacturer=QTI
-
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.soc.model=SM7125
 
 # Power
 PRODUCT_PACKAGES += \
@@ -492,7 +503,7 @@ PRODUCT_PACKAGES += \
     vendor.qti.hardware.vibrator.service
 
 PRODUCT_COPY_FILES += \
-    vendor/qcom/opensource/vibrator/excluded-input-devices.xml:$(TARGET_COPY_OUT_VENDOR)/etc/excluded-input-devices.xml
+    $(LOCAL_PATH)/vibrator/excluded-input-devices.xml:$(TARGET_COPY_OUT_VENDOR)/etc/excluded-input-devices.xml
 
 # Vulkan
 PRODUCT_COPY_FILES += \
